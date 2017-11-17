@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin panel</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css"
+          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container">
+    </div>
+</nav>
+
+<div class="container" style="min-height: 500px">
+
+    <div class="starter-template" id="login-block">
+        <h1>Authorization</h1>
+        <div id="login-feedback" class=""></div>
+        <form class="form-horizontal" id="login-form">
+            <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="password"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" id="btn-login" class="btn btn-primary btn-lg">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="starter-template" id="db-block" hidden="hidden">
+        <h1>Database settings</h1>
+        <div id="db-feedback"></div>
+        <form class="form-horizontal" id="db-form">
+            <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label">Dialect</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="db-dialect"/>
+                </div>
+            </div>
+            <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label">Url</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="db-url"/>
+                </div>
+            </div>
+            <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="db-username"/>
+                </div>
+            </div>
+            <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="db-password"/>
+                </div>
+            </div>
+            <div class="form-group form-group-lg">
+                <label class="col-sm-2 control-label">Driver</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="db-driver"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" id="btn-save" class="btn btn-primary btn-lg">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="starter-template" id="password-block" hidden="hidden">
+        <h1>Generate new password</h1>
+        <div id="password-feedback"></div>
+        <form class="form-horizontal" id="password-form">
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" id="btn-generate" class="btn btn-primary btn-lg">Generate and save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript"
+        src="webjars/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="admin.js"></script>
+</body>
+</html>
