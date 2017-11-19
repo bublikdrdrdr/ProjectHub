@@ -1,4 +1,4 @@
-package app.entities;
+package app.entities.db;
 
 
 import javax.persistence.*;

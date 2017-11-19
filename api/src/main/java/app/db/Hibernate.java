@@ -46,7 +46,7 @@ public class Hibernate {
             Map<String, String> settings = new HashMap<>();
             settings.put(Environment.DRIVER, localSettings.getValue(DB_DRIVER));
             settings.put(Environment.URL, localSettings.getValue(DB_URL));
-            settings.put(Environment.USER, localSettings.getValue(DB_URL));
+            settings.put(Environment.USER, localSettings.getValue(DB_USER));
             settings.put(Environment.PASS, localSettings.getValue(DB_PASS));
             settings.put(Environment.DIALECT, localSettings.getValue(DB_DIALECT));
             settings.put(Environment.SHOW_SQL, "true");

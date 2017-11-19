@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Main {
     public static final boolean debug = false;
+    public static final boolean defaultDatabase = true;
+
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
