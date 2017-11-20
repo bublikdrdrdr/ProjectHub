@@ -30,10 +30,14 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile('org.springframework.boot:spring-boot-starter-test')
+    //compile('org.springframework.boot:spring-boot-starter-test')
+    //compile("org.springframework.boot:spring-boot-starter-jdbc")
     compile('com.jayway.jsonpath:json-path')
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
     compile 'mysql:mysql-connector-java:5.1.16'
+    compile 'org.springframework:spring-orm:4.3.2.RELEASE'
+    compile 'org.apache.tomcat:tomcat-dbcp:7.0.55'
+    //compile 'javax.transaction:jta:1.1'
     compile 'org.hibernate:hibernate-core:5.2.10.Final'
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile 'org.webjars:bootstrap:3.3.7'

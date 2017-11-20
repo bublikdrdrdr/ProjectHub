@@ -91,7 +91,9 @@ public class SystemController {
                 localSettings.getValue(LocalSettings.ValueType.DB_URL),
                 localSettings.getValue(LocalSettings.ValueType.DB_USER),
                 localSettings.getValue(LocalSettings.ValueType.DB_PASS),
-                localSettings.getValue(LocalSettings.ValueType.DB_DRIVER));
+                localSettings.getValue(LocalSettings.ValueType.DB_DRIVER),
+                localSettings.getValue(LocalSettings.ValueType.DB_HBM2DDL_AUTO),
+                localSettings.getValue(LocalSettings.ValueType.DB_GQI));
     }
 
     private boolean checkPassword(String password){
