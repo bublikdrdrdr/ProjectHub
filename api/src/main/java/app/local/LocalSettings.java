@@ -7,7 +7,7 @@ import app.exceptions.SetValueException;
  */
 public interface LocalSettings {
 
-    enum ValueType{DB_DIALECT, DB_URL, DB_USER, DB_PASS, DB_DRIVER, ACCESS_PASS, LAST_LOGIN}
+    enum ValueType{DB_DIALECT, DB_URL, DB_USER, DB_PASS, DB_DRIVER, ACCESS_PASS, LAST_LOGIN, DB_HBM2DDL_AUTO, DB_GQI}
 
     String getValue(ValueType valueType);
     void setValue(ValueType valueType, String value) throws SetValueException;

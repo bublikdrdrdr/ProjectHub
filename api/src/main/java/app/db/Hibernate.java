@@ -1,81 +1,52 @@
 package app.db;
 
-import app.local.LocalSettings;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
+import app.entities.dao.DatabaseSettings;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManager;
-import java.util.HashMap;
-import java.util.Map;
-
-import static app.local.LocalSettings.ValueType.*;
+import javax.sql.DataSource;
 
 /**
- * Created by Bublik on 09-Nov-17.
+ * Created by Bublik on 20-Nov-17.
  */
+@Configuration
+@EnableTransactionManagement
+//@ComponentScan({"app"})
 public class Hibernate {
 
-    private static Hibernate ourInstance = new Hibernate();
-
-    public static Hibernate getInstance() {
-        return ourInstance;
-    }
-
-    private Hibernate() {
-        resetSession();
-    }
-
-    public void resetSession(){
-        sessionFactory = getSessionFactory();
-    }
-
     @Autowired
-    LocalSettings localSettings;
+    DatabaseSettings databaseSettings;
 
-    private SessionFactory sessionFactory;
-
-    private SessionFactory getSessionFactory() {
-        try {
-            StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
-
-            Map<String, String> settings = new HashMap<>();
-            settings.put(Environment.DRIVER, localSettings.getValue(DB_DRIVER));
-            settings.put(Environment.URL, localSettings.getValue(DB_URL));
-            settings.put(Environment.USER, localSettings.getValue(DB_USER));
-            settings.put(Environment.PASS, localSettings.getValue(DB_PASS));
-            settings.put(Environment.DIALECT, localSettings.getValue(DB_DIALECT));
-            settings.put(Environment.SHOW_SQL, "true");
-            settings.put(Environment.HBM2DDL_AUTO, "create");
-            settings.put(Environment.FORMAT_SQL, "true");
-            registryBuilder.applySettings(settings);
-            MetadataSources metadataSources = new MetadataSources(
-                    registryBuilder.build());
-            //entity classes mapping
-            //metadataSources.addAnnotatedClass(User.class);
-
-
-            SessionFactory sessionFactory = metadataSources
-                    .getMetadataBuilder().build()
-                    .getSessionFactoryBuilder().build();
-            return sessionFactory;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Bean
+    LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+        sessionFactoryBean.setDataSource(getDataSource());
+        sessionFactoryBean.setPackagesToScan(new String[]{"app.entities.db"});
+        sessionFactoryBean.setHibernateProperties(databaseSettings.getHibernateProperties());
+        return sessionFactoryBean;
     }
 
-    public Session getSession()
-            throws HibernateException {
-        if (sessionFactory==null) throw new HibernateException("SessionFactory is null");
-        return sessionFactory.openSession();
+    @Bean
+    public DataSource getDataSource(){
+        return databaseSettings.getDataSource();
     }
 
-    public EntityManager getEntityManager(){
-        return getSession().getEntityManagerFactory().createEntityManager();
+    @Bean
+    @Autowired
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+        HibernateTransactionManager htm = new HibernateTransactionManager();
+        htm.setSessionFactory(sessionFactory);
+        return htm;
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 }
