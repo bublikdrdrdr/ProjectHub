@@ -1,7 +1,6 @@
-package app.entities.dao.impl;
+package app.entities.dao;
 
 import app.Main;
-import app.entities.dao.DatabaseSettings;
 import app.entities.rest.DatabaseParams;
 import app.exceptions.DatabaseParamsReadException;
 import app.exceptions.SetValueException;
