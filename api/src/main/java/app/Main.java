@@ -11,8 +11,6 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class})
 public class Main {
-    public static final boolean debug = false;
-    public static final boolean defaultDatabase = true;
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);

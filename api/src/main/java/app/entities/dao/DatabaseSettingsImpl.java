@@ -1,6 +1,5 @@
 package app.entities.dao;
 
-import app.Main;
 import app.entities.rest.DatabaseParams;
 import app.exceptions.DatabaseParamsReadException;
 import app.exceptions.SetValueException;
@@ -24,7 +23,7 @@ public class DatabaseSettingsImpl implements DatabaseSettings{
     private static final String defaultUser = "root";
     private static final String defaultPassword = "";
     private static final String defaultDialect = "org.hibernate.dialect.MariaDB53Dialect";
-    private static final String defaultHbm2Ddl = "create-drop";
+    private static final String defaultHbm2Ddl = app.Properties.hibernate.dropDatabaseOnStart?"create-drop":"update";
     private static final String defaultGQI = "true";
 
     @Autowired
@@ -33,7 +32,7 @@ public class DatabaseSettingsImpl implements DatabaseSettings{
     @Override
     public DatabaseParams getDatabaseParams() throws DatabaseParamsReadException{
         try {
-            if (Main.defaultDatabase) return getDefaultDatabaseParams();
+            if (app.Properties.hibernate.defaultDatabase) return getDefaultDatabaseParams();
             return new DatabaseParams(localSettings.getValue(LocalSettings.ValueType.DB_DIALECT),
                     localSettings.getValue(LocalSettings.ValueType.DB_URL),
                     localSettings.getValue(LocalSettings.ValueType.DB_USER),
@@ -48,7 +47,7 @@ public class DatabaseSettingsImpl implements DatabaseSettings{
 
     @Override
     public void setDatabaseParams(DatabaseParams databaseParams) throws SetValueException {
-        if (Main.defaultDatabase){
+        if (app.Properties.hibernate.defaultDatabase){
             Logger logger = Logger.getLogger(this.getClass());
             logger.log(Logger.Level.DEBUG, "Trying to overwrite default settings");
         } else {
@@ -75,12 +74,12 @@ public class DatabaseSettingsImpl implements DatabaseSettings{
 
     @Override
     public Properties getHibernateProperties() {
-        if (Main.defaultDatabase) return getDefaultHibernateProperties();
+        if (app.Properties.hibernate.defaultDatabase) return getDefaultHibernateProperties();
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", localSettings.getValue(LocalSettings.ValueType.DB_HBM2DDL_AUTO));
         properties.setProperty("hibernate.dialect", localSettings.getValue(LocalSettings.ValueType.DB_DIALECT));
         properties.setProperty("hibernate.globally_quoted_identifiers",localSettings.getValue(LocalSettings.ValueType.DB_GQI));
-        properties.setProperty("hibernate.show_sql", Boolean.toString(Main.debug));
+        properties.setProperty("hibernate.show_sql", Boolean.toString(app.Properties.hibernate.debug));
         return properties;
     }
 
@@ -89,7 +88,7 @@ public class DatabaseSettingsImpl implements DatabaseSettings{
         properties.setProperty("hibernate.hbm2ddl.auto", defaultHbm2Ddl);
         properties.setProperty("hibernate.dialect", defaultDialect);
         properties.setProperty("hibernate.globally_quoted_identifiers",defaultGQI);
-        properties.setProperty("hibernate.show_sql", Boolean.toString(Main.debug));
+        properties.setProperty("hibernate.show_sql", Boolean.toString(app.Properties.hibernate.debug));
         return properties;
     }
 
