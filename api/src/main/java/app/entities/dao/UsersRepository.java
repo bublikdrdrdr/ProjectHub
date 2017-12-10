@@ -1,8 +1,9 @@
 package app.entities.dao;
 
+import app.db.SessionHolder;
 import app.entities.db.User;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,15 +19,21 @@ import java.util.List;
 public class UsersRepository {
 
     @Autowired
-    SessionFactory sessionFactory;
+    SessionHolder sessionHolder;
 
     public User getUser(long id){
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("from User where id = :id ");
-        query.setParameter("id", id);
-        List list = query.list();
-        if (list.size()>0){
-            return (User)list.get(0);
+        try {
+            Session session = sessionHolder.getSession();
+            Query query = session.createQuery("from User where id = :id ");
+            query.setParameter("id", id);
+            List list = query.list();
+            session.close();
+            if (list.size() > 0) {
+                return (User) list.get(0);
+            }
+        } catch (HibernateException e){
+            sessionHolder.closeSession();
+            throw e;
         }
         return null;
     }

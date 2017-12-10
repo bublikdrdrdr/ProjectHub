@@ -2,11 +2,12 @@ package app.entities.db;
 
 
 import app.Properties;
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * Created by Bublik on 10-Nov-17.
@@ -37,7 +38,7 @@ public class User {
     @JsonIgnore
     private String passwordSalt;
 
-    @Column
+    @Column(length = 104857600)
     @Lazy
     @JsonIgnore
     private byte[] image;
@@ -48,12 +49,26 @@ public class User {
     @Column(name = "last_login")
     private Timestamp lastOnline;
 
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Project> projects;
+
     public User() {
     }
 
     public User(Long id, String email) {
         this.id = id;
         this.email = email;
+    }
+
+    public User(String email, String name, String surname, String password, String passwordSalt, Timestamp registered, Timestamp lastOnline) {
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.password = password;
+        this.passwordSalt = passwordSalt;
+        this.registered = registered;
+        this.lastOnline = lastOnline;
     }
 
     public Long getId() {
@@ -126,5 +141,13 @@ public class User {
 
     public void setLastOnline(Timestamp lastOnline) {
         this.lastOnline = lastOnline;
+    }
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
     }
 }
