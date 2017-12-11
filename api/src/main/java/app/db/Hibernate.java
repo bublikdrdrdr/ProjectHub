@@ -34,7 +34,7 @@ public class Hibernate {
     }
 
     @Bean
-    private DataSource getDataSource(){
+    DataSource getDataSource(){
         return databaseSettings.getDataSource();
     }
 
