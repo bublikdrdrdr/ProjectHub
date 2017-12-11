@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.Main;
+import app.Properties;
 import app.entities.rest.DatabaseParams;
 import app.exceptions.SetValueException;
 import app.local.LocalSettings;
@@ -26,11 +26,11 @@ public class SystemController {
 
     //last password: wN8e72.OJ2qPfCe6oX3wqeg+rLH))K*C6wKq5f3,H
     @Autowired
-    LocalSettings localSettings;
+    private LocalSettings localSettings;
 
     @RequestMapping(value = "/db", method = RequestMethod.GET)
     public ResponseEntity<DatabaseParams> getDatabaseParams(@RequestParam String password) {
-        if (!Main.debug && !checkPassword(password)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (!Properties.hibernate.debug && !checkPassword(password)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         return ResponseEntity.ok(getDatabaseParams());
     }
 
@@ -41,7 +41,7 @@ public class SystemController {
                                                     @RequestParam(required = false) String user,
                                                     @RequestParam(required = false) String dbpass,
                                                     @RequestParam(required = false) String driver){
-        if (!Main.debug && !checkPassword(password)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (!Properties.hibernate.debug && !checkPassword(password)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         try {
             if (dialect!=null) localSettings.setValue(LocalSettings.ValueType.DB_DIALECT, dialect);
             if (url!=null) localSettings.setValue(LocalSettings.ValueType.DB_URL, url);
@@ -57,7 +57,7 @@ public class SystemController {
     @RequestMapping(value = "/password", method = RequestMethod.GET)
     public ResponseEntity<String> generatePassword(@RequestParam String old) {
         if (localSettings.getValue(LocalSettings.ValueType.ACCESS_PASS) != null) {
-            if (!Main.debug && !checkPassword(old))
+            if (!Properties.hibernate.debug && !checkPassword(old))
                 return new ResponseEntity<>("Wrong password", HttpStatus.FORBIDDEN);
         }
         String password = generatePass();

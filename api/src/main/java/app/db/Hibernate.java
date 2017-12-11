@@ -1,5 +1,6 @@
 package app.db;
 
+import app.Properties;
 import app.entities.dao.DatabaseSettings;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,26 +22,26 @@ import javax.sql.DataSource;
 public class Hibernate {
 
     @Autowired
-    DatabaseSettings databaseSettings;
+    private DatabaseSettings databaseSettings;
 
     @Bean
     LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+        CustomLocalSessionFactoryBean sessionFactoryBean = new CustomLocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(getDataSource());
-        sessionFactoryBean.setPackagesToScan(new String[]{"app.entities.db"});
+        sessionFactoryBean.setPackagesToScan(Properties.hibernate.packages);
         sessionFactoryBean.setHibernateProperties(databaseSettings.getHibernateProperties());
         return sessionFactoryBean;
     }
 
     @Bean
-    public DataSource getDataSource(){
+    private DataSource getDataSource(){
         return databaseSettings.getDataSource();
     }
 
     @Bean
     @Autowired
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
-        HibernateTransactionManager htm = new HibernateTransactionManager();
+        HibernateTransactionManager htm = new CustomHibernateTransactionManager();
         htm.setSessionFactory(sessionFactory);
         return htm;
     }
