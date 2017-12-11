@@ -1,7 +1,10 @@
 package app.entities.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * Created by Bublik on 21-Nov-17.
@@ -28,7 +31,20 @@ public class Project {
     @Column
     private String content;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    @JsonIgnore
+    private Set<ProjectAttachment> projectAttachments;
+
     public Project() {
+    }
+
+    public Project(Long id, Timestamp created, User author, String subject, String content, Set<ProjectAttachment> projectAttachments) {
+        this.id = id;
+        this.created = created;
+        this.author = author;
+        this.subject = subject;
+        this.content = content;
+        this.projectAttachments = projectAttachments;
     }
 
     public Long getId() {
@@ -69,5 +85,13 @@ public class Project {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Set<ProjectAttachment> getProjectAttachments() {
+        return projectAttachments;
+    }
+
+    public void setProjectAttachments(Set<ProjectAttachment> projectAttachments) {
+        this.projectAttachments = projectAttachments;
     }
 }

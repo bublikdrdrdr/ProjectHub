@@ -3,7 +3,6 @@ package app.entities.db;
 
 import app.Properties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -38,10 +37,9 @@ public class User {
     @JsonIgnore
     private String passwordSalt;
 
-    @Column(length = 104857600)
-    @Lazy
+    @OneToOne(fetch = FetchType.LAZY)//TODO: test
     @JsonIgnore
-    private byte[] image;
+    private Image image;
 
     @Column
     private Timestamp registered;
@@ -54,11 +52,6 @@ public class User {
     private Set<Project> projects;
 
     public User() {
-    }
-
-    public User(Long id, String email) {
-        this.id = id;
-        this.email = email;
     }
 
     public User(String email, String name, String surname, String password, String passwordSalt, Timestamp registered, Timestamp lastOnline) {
@@ -119,11 +112,11 @@ public class User {
         this.passwordSalt = passwordSalt;
     }
 
-    public byte[] getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 
