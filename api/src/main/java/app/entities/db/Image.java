@@ -3,6 +3,8 @@ package app.entities.db;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+import static app.Properties.db.userImageBytes;
+
 /**
  * Created by Bublik on 10-Dec-17.
  */
@@ -18,10 +20,10 @@ public class Image {
     @Column(nullable = false)
     private Timestamp created;
 
-    @Column
+    @Column(length = 500)
     private String url;
 
-    @Column(length = 5*1024*1024)
+    @Column(length = userImageBytes)
     private byte[] file;
 
     public Image() {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,7 +38,7 @@ public class User {
     @JsonIgnore
     private String passwordSalt;
 
-    @OneToOne(fetch = FetchType.LAZY)//TODO: test
+    @OneToOne(fetch = FetchType.LAZY)//TODO: test (without mappedBy)
     @JsonIgnore
     private Image image;
 
@@ -51,6 +52,35 @@ public class User {
     @JsonIgnore
     private Set<Project> projects;
 
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<LikedProject> likedProjects;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<ProjectComment> comments;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<UserBlock> blocks;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<UserBookmark> bookmarks;
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Report> reports;
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Message> sentMessages;
+
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Message> receivedMessages;
+
+
     public User() {
     }
 
@@ -62,6 +92,29 @@ public class User {
         this.passwordSalt = passwordSalt;
         this.registered = registered;
         this.lastOnline = lastOnline;
+    }
+
+    public User(Long id, String email, String name, String surname, String password, String passwordSalt, Image image,
+                Timestamp registered, Timestamp lastOnline, Set<Project> projects, Set<LikedProject> likedProjects,
+                Set<ProjectComment> comments, Set<UserBlock> blocks, Set<UserBookmark> bookmarks, Set<Report> reports,
+                List<Message> sentMessages, List<Message> receivedMessages) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.password = password;
+        this.passwordSalt = passwordSalt;
+        this.image = image;
+        this.registered = registered;
+        this.lastOnline = lastOnline;
+        this.projects = projects;
+        this.likedProjects = likedProjects;
+        this.comments = comments;
+        this.blocks = blocks;
+        this.bookmarks = bookmarks;
+        this.reports = reports;
+        this.sentMessages = sentMessages;
+        this.receivedMessages = receivedMessages;
     }
 
     public Long getId() {
@@ -142,5 +195,61 @@ public class User {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public Set<LikedProject> getLikedProjects() {
+        return likedProjects;
+    }
+
+    public void setLikedProjects(Set<LikedProject> likedProjects) {
+        this.likedProjects = likedProjects;
+    }
+
+    public Set<ProjectComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<ProjectComment> comments) {
+        this.comments = comments;
+    }
+
+    public Set<UserBlock> getBlocks() {
+        return blocks;
+    }
+
+    public void setBlocks(Set<UserBlock> blocks) {
+        this.blocks = blocks;
+    }
+
+    public Set<UserBookmark> getBookmarks() {
+        return bookmarks;
+    }
+
+    public void setBookmarks(Set<UserBookmark> bookmarks) {
+        this.bookmarks = bookmarks;
+    }
+
+    public Set<Report> getReports() {
+        return reports;
+    }
+
+    public void setReports(Set<Report> reports) {
+        this.reports = reports;
+    }
+
+    public List<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    public void setSentMessages(List<Message> sentMessages) {
+        this.sentMessages = sentMessages;
+    }
+
+    public List<Message> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public void setReceivedMessages(List<Message> receivedMessages) {
+        this.receivedMessages = receivedMessages;
     }
 }

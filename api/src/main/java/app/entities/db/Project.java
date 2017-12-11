@@ -1,5 +1,6 @@
 package app.entities.db;
 
+import app.Properties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -18,33 +19,46 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private Timestamp created;
 
-    @ManyToOne
+    @Column
+    private Timestamp posted;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn
+    @JsonIgnore
     private User author;
 
     @Column(nullable = false)
     private String subject;
 
-    @Column
+    @Column(nullable = false, length = Properties.db.projectContentLength)
     private String content;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     @JsonIgnore
-    private Set<ProjectAttachment> projectAttachments;
+    private Set<ProjectAttachment> attachments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    @JsonIgnore
+    private Set<LikedProject> likes;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    @JsonIgnore
+    private Set<ProjectComment> projectComments;
+
 
     public Project() {
     }
 
-    public Project(Long id, Timestamp created, User author, String subject, String content, Set<ProjectAttachment> projectAttachments) {
+    public Project(Long id, Timestamp created, User author, String subject, String content, Set<ProjectAttachment> attachments) {
         this.id = id;
         this.created = created;
         this.author = author;
         this.subject = subject;
         this.content = content;
-        this.projectAttachments = projectAttachments;
+        this.attachments = attachments;
     }
 
     public Long getId() {
@@ -87,11 +101,11 @@ public class Project {
         this.content = content;
     }
 
-    public Set<ProjectAttachment> getProjectAttachments() {
-        return projectAttachments;
+    public Set<ProjectAttachment> getAttachments() {
+        return attachments;
     }
 
-    public void setProjectAttachments(Set<ProjectAttachment> projectAttachments) {
-        this.projectAttachments = projectAttachments;
+    public void setAttachments(Set<ProjectAttachment> attachments) {
+        this.attachments = attachments;
     }
 }
