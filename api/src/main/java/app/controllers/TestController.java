@@ -3,6 +3,8 @@ package app.controllers;
 import app.entities.dao.UsersRepository;
 import app.entities.db.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,10 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @Autowired
-    UsersRepository usersRepository;
+    private UsersRepository usersRepository;
 
     @RequestMapping("/user")
-    public User getUser(@RequestParam long id){
-        return usersRepository.getUser(id);
+    public ResponseEntity<User> getUser(@RequestParam long id){
+        try {
+            User user = usersRepository.getUser(id);
+            return ResponseEntity.ok(user);
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

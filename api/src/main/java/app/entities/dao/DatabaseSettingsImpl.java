@@ -27,7 +27,7 @@ public class DatabaseSettingsImpl implements DatabaseSettings{
     private static final String defaultGQI = "true";
 
     @Autowired
-    LocalSettings localSettings;
+    private LocalSettings localSettings;
 
     @Override
     public DatabaseParams getDatabaseParams() throws DatabaseParamsReadException{
