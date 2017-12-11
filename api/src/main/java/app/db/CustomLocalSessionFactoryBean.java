@@ -37,7 +37,7 @@ public class CustomLocalSessionFactoryBean extends LocalSessionFactoryBean {
             List<AttachmentType> list = AttachmentType.getValues();
             for (AttachmentType attachmentType: list){
                 try {
-                    Query query = session.createQuery("FROM "+AttachmentType.class.getSimpleName()+" WHERE name LIKE :typeName");
+                    Query query = session.createQuery("FROM AttachmentType WHERE name LIKE :typeName");
                     query.setParameter("typeName", attachmentType.getName());
                     query.getSingleResult();
                 } catch (NoResultException e){

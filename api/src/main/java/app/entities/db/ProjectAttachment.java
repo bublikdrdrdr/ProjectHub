@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
+import static app.Properties.db.*;
+
 /**
  * Created by Bublik on 10-Dec-17.
  */
@@ -22,13 +24,13 @@ public class ProjectAttachment {
     @JsonIgnore
     private Project project;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = false)//todo: test
     private AttachmentType attachmentType;
 
-    @Column
+    @Column(length = projectAttachmentTextLength)
     private String textValue;
 
-    @Column
+    @Column(length = projectAttachmentBytes)
     private byte[] blobValue;
 
     public ProjectAttachment() {
