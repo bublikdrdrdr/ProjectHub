@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 public class Hibernate {
 
     @Autowired
-    DatabaseSettings databaseSettings;
+    private DatabaseSettings databaseSettings;
 
     @Bean
     LocalSessionFactoryBean sessionFactory() {
@@ -34,7 +34,7 @@ public class Hibernate {
     }
 
     @Bean
-    public DataSource getDataSource(){
+    private DataSource getDataSource(){
         return databaseSettings.getDataSource();
     }
 

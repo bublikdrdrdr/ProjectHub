@@ -22,8 +22,7 @@ public class SQLite {
     }
 
     public ResultSet select(String s) throws SQLException{
-        ResultSet rs = statement.executeQuery(s);
-        return rs;
+        return statement.executeQuery(s);
     }
 
     public void close() {
