@@ -3,7 +3,7 @@ package app.entities.dao;
 import app.entities.rest.DatabaseParams;
 import app.exceptions.DatabaseParamsReadException;
 import app.exceptions.SetValueException;
-import app.local.LocalSettings;
+import app.services.local.LocalSettings;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
