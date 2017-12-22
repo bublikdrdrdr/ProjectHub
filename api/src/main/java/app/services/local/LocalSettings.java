@@ -1,4 +1,4 @@
-package app.local;
+package app.services.local;
 
 import app.exceptions.SetValueException;
 

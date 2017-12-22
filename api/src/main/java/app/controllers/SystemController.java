@@ -3,7 +3,7 @@ package app.controllers;
 import app.Properties;
 import app.entities.rest.DatabaseParams;
 import app.exceptions.SetValueException;
-import app.local.LocalSettings;
+import app.services.local.LocalSettings;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

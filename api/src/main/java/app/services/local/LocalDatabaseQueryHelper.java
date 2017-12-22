@@ -1,4 +1,4 @@
-package app.local;
+package app.services.local;
 
 /**
  * Created by Bublik on 09-Nov-17.

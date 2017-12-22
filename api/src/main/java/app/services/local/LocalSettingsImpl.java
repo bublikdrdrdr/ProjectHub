@@ -1,4 +1,4 @@
-package app.local;
+package app.services.local;
 
 import app.db.SQLite;
 import app.exceptions.SetValueException;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static app.local.LocalDatabaseQueryHelper.DB_NAME;
+import static app.services.local.LocalDatabaseQueryHelper.DB_NAME;
 
 /**
  * Created by Bublik on 09-Nov-17.
@@ -21,10 +21,10 @@ public class LocalSettingsImpl implements LocalSettings{
     public LocalSettingsImpl() throws SQLException {
         try {
             sqLite = new SQLite(DB_NAME);
+            createTable();
         } catch (ClassNotFoundException e) {
             throw new SQLException("Can't get access to local db", e);
         }
-        createTable();
     }
 
     private void createTable() throws SQLException{
