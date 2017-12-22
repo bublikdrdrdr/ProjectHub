@@ -31,7 +31,7 @@ public class ExceptionResponseMapping implements Cloneable{
         // TODO: 22-Dec-17 compare speed
     }
 
-    public void addAll(ExceptionResponseMapping mapping){
+    public void setAll(ExceptionResponseMapping mapping){
         mapping.pairs.forEach(this::set);
     }
 
@@ -124,6 +124,14 @@ public class ExceptionResponseMapping implements Cloneable{
         public String toString() {
             return e.getClass().getSimpleName()+":"+s.name()+"("+s.toString()+")";
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this==obj) return true;
+            if (!(obj instanceof ExceptionStatusPair)) return false;
+            ExceptionStatusPair esp = (ExceptionStatusPair) obj;
+            return (e.getClass().equals(esp.e.getClass()) && s.equals(esp.s));
+        }
     }
 
     public HttpStatus getDefaultStatus() {
@@ -135,7 +143,7 @@ public class ExceptionResponseMapping implements Cloneable{
     }
 
     @Override
-    protected ExceptionResponseMapping clone() {
+    public ExceptionResponseMapping clone() {
         ExceptionResponseMapping erm = new ExceptionResponseMapping(this);
         return erm;
     }
@@ -150,5 +158,15 @@ public class ExceptionResponseMapping implements Cloneable{
             b.append(pair.toString());
         }
         return b.append(']').toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ExceptionResponseMapping)) return false;
+        ExceptionResponseMapping erm = (ExceptionResponseMapping) obj;
+        return erm.pairs.size() == this.pairs.size() &&
+                this.defaultStatus.equals(erm.defaultStatus) &&
+                this.pairs.equals(erm.pairs);
     }
 }

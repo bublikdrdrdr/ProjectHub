@@ -43,5 +43,6 @@ dependencies {
     compile 'org.webjars:jquery:3.2.1'
     compile 'org.springframework:spring-context-support'
     compile group: 'javax.mail', name: 'mail', version: '1.4'
+    testCompile 'junit:junit:4.12'
 }
 
