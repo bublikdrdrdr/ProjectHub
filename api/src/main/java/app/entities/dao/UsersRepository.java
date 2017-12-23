@@ -2,6 +2,7 @@ package app.entities.dao;
 
 import app.db.SessionHolder;
 import app.entities.db.User;
+import app.entities.rest.SearchParams;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -101,59 +102,69 @@ public class UsersRepository {
         }
     }
 
-
-    public enum SortBy {NONE, REGISTERED, ONLINE, NAME, SURNAME}
-
-
-    /**
-     * @param exact - search mode(select similar content or exactly same)
-     * @return list of users
-     */
-    public List<User> searchUsers(String email, String username, String name, boolean exact, SortBy sortBy, boolean desc){
+    public List<User> searchUsers(SearchParams searchParams){
         try {
             Session session = sessionHolder.getSession();
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<User> query = cb.createQuery(User.class);
-            Root<User> user = query.from(User.class);
-            query.select(user);
-            List<Predicate> predicates = new LinkedList<>();
-            if (email != null) predicates.add(cb.like(cb.upper(user.get("email")), preparePattern(email, exact)));
-            if (username != null) predicates.add(cb.like(cb.upper(user.get("username")), preparePattern(username, exact)));
-            if (name != null) {
-                Expression<String> nameUpper = cb.upper(user.get("name"));
-                Expression<String> surnameUpper = cb.upper(user.get("surname"));
-                Expression<String> expression = cb.concat(nameUpper, " ");
-                expression = cb.concat(expression, surnameUpper);
-                if (exact){
-                    predicates.add(cb.like(expression, name));
-                } else {
-                    expression = cb.concat(expression, " ");
-                    expression = cb.concat(expression, nameUpper);
-                    predicates.add(cb.like(expression, namePattern(name)));
-                }
-            }
-            query.where(cb.and(predicates.toArray(new Predicate[0])));
-            if (sortBy!=SortBy.NONE) {
-                Order order;
-                Expression expression;
-                switch (sortBy) {
-                    case REGISTERED: expression = user.get("registered");
-                        break;
-                    case ONLINE: expression = user.get("last_login");
-                        break;
-                    case NAME: expression = user.get("name");
-                        break;
-                    case SURNAME: expression = user.get("surname");
-                        break;
-                    default: throw new IllegalArgumentException("Unknown SortBy value: "+sortBy.name());
-                }
-                if (desc) order = cb.desc(expression); else order = cb.asc(expression);
-                query.orderBy(order);
-            }
-            return session.createQuery(query).getResultList();
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+            getSearchQuery(searchParams, criteriaBuilder, query);
+            query.select(query.from(User.class));
+            return session.createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
         } finally {
             sessionHolder.closeSession();
         }
+    }
+
+    public long searchCount(SearchParams searchParams){
+        try{
+            Session session = sessionHolder.getSession();
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+            getSearchQuery(searchParams, criteriaBuilder, query);
+            query.select(criteriaBuilder.count(query.from(User.class)));
+            return session.createQuery(query).getSingleResult();
+        } finally {
+            sessionHolder.closeSession();
+        }
+    }
+
+    private CriteriaQuery<?> getSearchQuery(SearchParams searchParams, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> query){
+        Root<User> user = query.from(User.class);
+        List<Predicate> predicates = new LinkedList<>();
+        if (searchParams.email != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(user.get("email")), preparePattern(searchParams.email, searchParams.exact)));
+        if (searchParams.username != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(user.get("username")), preparePattern(searchParams.username, searchParams.exact)));
+        if (searchParams.name != null) {
+            Expression<String> nameUpper = criteriaBuilder.upper(user.get("name"));
+            Expression<String> surnameUpper = criteriaBuilder.upper(user.get("surname"));
+            Expression<String> expression = criteriaBuilder.concat(nameUpper, " ");
+            expression = criteriaBuilder.concat(expression, surnameUpper);
+            if (searchParams.exact){
+                predicates.add(criteriaBuilder.like(expression, searchParams.name));
+            } else {
+                expression = criteriaBuilder.concat(expression, " ");
+                expression = criteriaBuilder.concat(expression, nameUpper);
+                predicates.add(criteriaBuilder.like(expression, namePattern(searchParams.name)));
+            }
+        }
+        query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+        if (searchParams.sortBy!= SearchParams.SortBy.NONE) {
+            Order order;
+            Expression expression;
+            switch (searchParams.sortBy) {
+                case REGISTERED: expression = user.get("registered");
+                    break;
+                case ONLINE: expression = user.get("last_login");
+                    break;
+                case NAME: expression = user.get("name");
+                    break;
+                case SURNAME: expression = user.get("surname");
+                    break;
+                default: throw new IllegalArgumentException("Unknown SortBy value: "+searchParams.sortBy.name());
+            }
+            if (searchParams.desc) order = criteriaBuilder.desc(expression); else order = criteriaBuilder.asc(expression);
+            query.orderBy(order);
+        }
+        return query;
     }
 
     private String preparePattern(String s, boolean exact){

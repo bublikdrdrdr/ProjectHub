@@ -21,7 +21,8 @@ public class TestController {
     @RequestMapping("/user")
     public ResponseEntity<User> getUser(@RequestParam String email){
         try {
-            User user = usersRepository.getUser(email);
+            User user = usersRepository.getUserByEmail(email);
+            if (user==null) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(user);
         } catch (Exception e){
             e.printStackTrace();
