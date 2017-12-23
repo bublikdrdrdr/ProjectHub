@@ -22,5 +22,7 @@ public final class Properties {
         public static final int projectContentLength = 90000;
         public static final int projectAttachmentBytes = 50*1024*1024;
         public static final int projectAttachmentTextLength = 50*1024*1024;
+        public static final int userSearchDefaultListSize = 30;
+        public static final int userSearchMaxListSize = 200;
     }
 }
