@@ -24,6 +24,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @Column(length = Properties.db.nameLength, nullable = false)
     private String name;
 
@@ -84,8 +87,9 @@ public class User {
     public User() {
     }
 
-    public User(String email, String name, String surname, String password, String passwordSalt, Timestamp registered, Timestamp lastOnline) {
+    public User(String email, String username, String name, String surname, String password, String passwordSalt, Timestamp registered, Timestamp lastOnline) {
         this.email = email;
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.password = password;
@@ -94,12 +98,13 @@ public class User {
         this.lastOnline = lastOnline;
     }
 
-    public User(Long id, String email, String name, String surname, String password, String passwordSalt, Image image,
+    public User(Long id, String email, String username, String name, String surname, String password, String passwordSalt, Image image,
                 Timestamp registered, Timestamp lastOnline, Set<Project> projects, Set<LikedProject> likedProjects,
                 Set<ProjectComment> comments, Set<UserBlock> blocks, Set<UserBookmark> bookmarks, Set<Report> reports,
                 List<Message> sentMessages, List<Message> receivedMessages) {
         this.id = id;
         this.email = email;
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.password = password;
@@ -131,6 +136,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {
