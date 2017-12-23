@@ -32,8 +32,23 @@ public class SessionHolder {
         return session;
     }
 
+    public Transaction beginTransaction(){
+        getSession();
+        transaction = session.beginTransaction();
+        return transaction;
+    }
+
+    public void commit(){
+        transaction.commit();
+    }
+
+    public void rollback(){
+        transaction.rollback();
+    }
+
     public void closeSession(){
         try {
+            transaction = null;
             if (session!=null) session.close();
         } catch (HibernateException he){
             logger.log(Logger.Level.WARN, he);
