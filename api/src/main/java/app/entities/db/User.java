@@ -41,7 +41,7 @@ public class User {
     @JsonIgnore
     private String passwordSalt;
 
-    @OneToOne(fetch = FetchType.LAZY)//TODO: test (without mappedBy)
+    @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private Image image;
 

@@ -65,7 +65,7 @@ public class UsersRepository {
     public User getUserByEmail(String email){
         try{
             Session session = sessionHolder.getSession();
-            Query query = session.createQuery("FROM Users WHERE email LIKE :email");
+            Query query = session.createQuery("FROM User WHERE email LIKE :email");
             query.setParameter("email", email);
             return (User)query.getSingleResult();
         } catch (NoResultException e) {
@@ -78,7 +78,7 @@ public class UsersRepository {
     public User getUserByUsername(String username){
         try{
             Session session = sessionHolder.getSession();
-            Query query = session.createQuery("FROM Users WHERE username LIKE :username");
+            Query query = session.createQuery("FROM User WHERE username LIKE :username");
             query.setParameter("username", username);
             return (User)query.getSingleResult();
         } catch (NoResultException e) {
