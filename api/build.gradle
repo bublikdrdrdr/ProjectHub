@@ -17,8 +17,8 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'gs-rest-service'
-    version =  '0.1.0'
+    baseName = 'projecthub-api'
+    version =  '0.0.2'
 }
 
 repositories {
@@ -29,20 +29,26 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+    //spring boot
     compile("org.springframework.boot:spring-boot-starter-web")
-    //compile('org.springframework.boot:spring-boot-starter-test')
-    //compile("org.springframework.boot:spring-boot-starter-jdbc")
+    //security
+    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    //db-sqlite
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
+    //db-mysql
     compile 'mysql:mysql-connector-java:5.1.16'
     compile 'org.springframework:spring-orm:4.3.2.RELEASE'
     compile 'org.apache.tomcat:tomcat-dbcp:7.0.55'
-    //compile 'javax.transaction:jta:1.1'
     compile 'org.hibernate:hibernate-core:5.2.10.Final'
+    //web
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile 'org.webjars:bootstrap:3.3.7'
     compile 'org.webjars:jquery:3.2.1'
-    compile 'org.springframework:spring-context-support'
-    compile group: 'javax.mail', name: 'mail', version: '1.4'
+    //test
     testCompile 'junit:junit:4.12'
+    //compile 'org.springframework:spring-context-support'
+    //compile group: 'javax.mail', name: 'mail', version: '1.4'
+    //compile 'javax.transaction:jta:1.1'
 }
 
