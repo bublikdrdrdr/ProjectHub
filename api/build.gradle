@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
-        classpath 'mysql:mysql-connector-java:5.1.16'
+        //classpath 'mysql:mysql-connector-java:5.1.16'
     }
 }
 
@@ -32,19 +32,19 @@ dependencies {
     //spring boot
     compile("org.springframework.boot:spring-boot-starter-web")
     //security
-    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    //compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2'
+    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
     //db-sqlite
-    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
+    //compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
     //db-mysql
     compile 'mysql:mysql-connector-java:5.1.16'
     compile 'org.springframework:spring-orm:4.3.2.RELEASE'
     compile 'org.apache.tomcat:tomcat-dbcp:7.0.55'
     compile 'org.hibernate:hibernate-core:5.2.10.Final'
     //web
-    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-    compile 'org.webjars:bootstrap:3.3.7'
-    compile 'org.webjars:jquery:3.2.1'
+    //compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    //compile 'org.webjars:bootstrap:3.3.7'
+    //compile 'org.webjars:jquery:3.2.1'
     //test
     testCompile 'junit:junit:4.12'
     //compile 'org.springframework:spring-context-support'

@@ -1,6 +1,6 @@
 package app.entities.dao;
 
-import app.db.SessionHolder;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
 public class ProjectRepository {
 
     @Autowired
-    SessionHolder sessionHolder;
+    SessionFactory sessionFactory;
 
 
 }

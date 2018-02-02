@@ -42,7 +42,7 @@ public class Message {
     private Timestamp sent;
 
     @Column
-    private boolean read;
+    private boolean seen;
 
     @Column(length = messageImageBytes)
     private byte[] image;
@@ -50,7 +50,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(Long id, User sender, User receiver, boolean deletedByReceiver, boolean deletedBySender, String message, Timestamp sent, boolean read, byte[] image) {
+    public Message(Long id, User sender, User receiver, boolean deletedByReceiver, boolean deletedBySender, String message, Timestamp sent, boolean seen, byte[] image) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
@@ -58,7 +58,7 @@ public class Message {
         this.deletedBySender = deletedBySender;
         this.message = message;
         this.sent = sent;
-        this.read = read;
+        this.seen = seen;
         this.image = image;
     }
 
@@ -118,12 +118,12 @@ public class Message {
         this.sent = sent;
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isSeen() {
+        return seen;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 
     public byte[] getImage() {

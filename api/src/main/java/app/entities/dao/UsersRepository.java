@@ -1,10 +1,10 @@
 package app.entities.dao;
 
-import app.db.SessionHolder;
 import app.entities.db.User;
 import app.entities.rest.SearchParams;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,7 +23,8 @@ import java.util.List;
 public class UsersRepository {
 
     @Autowired
-    private SessionHolder sessionHolder;
+    SessionFactory sessionFactory;
+    //private SessionHolder sessionHolder;
 
     public static final int INCLUDE_IMAGE_FLAG = 0x00000001;
     public static final int INCLUDE_PROJECTS_FLAG = 0x00000002;
@@ -40,8 +41,9 @@ public class UsersRepository {
     }
 
     public User getUser(long id, int flags){
+        Session session = null;
         try {
-            Session session = sessionHolder.getSession();
+            session = sessionFactory.openSession();
             User user = session.get(User.class, id);
             if (checkFlag(flags, INCLUDE_IMAGE_FLAG)) Hibernate.initialize(user.getImage());
             if (checkFlag(flags, INCLUDE_PROJECTS_FLAG)) Hibernate.initialize(user.getProjects());
@@ -54,7 +56,7 @@ public class UsersRepository {
             if (checkFlag(flags, INCLUDE_RECEIVED_MESSAGES_FLAG)) Hibernate.initialize(user.getReceivedMessages());
             return user;
         } finally {
-            sessionHolder.closeSession();
+            session.close();
         }
     }
 
@@ -63,19 +65,20 @@ public class UsersRepository {
     }
 
     public User getUserByEmail(String email){
+        Session session = null;
         try{
-            Session session = sessionHolder.getSession();
+            session = sessionFactory.openSession();
             Query query = session.createQuery("FROM User WHERE email LIKE :email");
             query.setParameter("email", email);
             return (User)query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         } finally {
-            sessionHolder.closeSession();
+            session.close();
         }
     }
 
-    public User getUserByUsername(String username){
+    /*public User getUserByUsername(String username){
         try{
             Session session = sessionHolder.getSession();
             Query query = session.createQuery("FROM User WHERE username LIKE :username");
@@ -188,5 +191,5 @@ public class UsersRepository {
         } finally {
             sessionHolder.closeSession();
         }
-    }
+    }*/
 }
