@@ -1,10 +1,9 @@
 package app.entities.db;
 
+import app.entities.etc.EntityParams;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-
-import static app.Properties.db.*;
 
 /**
  * Created by Bublik on 10-Dec-17.
@@ -27,10 +26,10 @@ public class ProjectAttachment {
     @OneToOne(optional = false)//todo: test
     private AttachmentType attachmentType;
 
-    @Column(length = projectAttachmentTextLength)
+    @Column(length = EntityParams.projectAttachmentTextLength)
     private String textValue;
 
-    @Column(length = projectAttachmentBytes)
+    @Column(length = EntityParams.projectAttachmentBytes)
     private byte[] blobValue;
 
     public ProjectAttachment() {

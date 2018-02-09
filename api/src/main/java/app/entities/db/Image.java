@@ -1,9 +1,9 @@
 package app.entities.db;
 
+import app.entities.etc.EntityParams;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-
-import static app.Properties.db.userImageBytes;
 
 /**
  * Created by Bublik on 10-Dec-17.
@@ -23,7 +23,7 @@ public class Image {
     @Column(length = 500)
     private String url;
 
-    @Column(length = userImageBytes)
+    @Column(length = EntityParams.userImageBytes)
     private byte[] file;
 
     public Image() {

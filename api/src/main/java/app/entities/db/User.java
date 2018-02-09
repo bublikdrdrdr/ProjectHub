@@ -1,7 +1,7 @@
 package app.entities.db;
 
 
-import app.Properties;
+import app.entities.etc.EntityParams;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -27,10 +27,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(length = Properties.db.nameLength, nullable = false)
+    @Column(length = EntityParams.nameLength, nullable = false)
     private String name;
 
-    @Column(length = Properties.db.surnameLength, nullable = false)
+    @Column(length = EntityParams.surnameLength, nullable = false)
     private String surname;
 
     @Column(nullable = false)

@@ -1,6 +1,6 @@
 package app.entities.db;
 
-import app.Properties;
+import app.entities.etc.EntityParams;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @Table(name = "reports")
 public class Report {
 
-    public enum ReportType{BUG, USER_BLOCK, OWN_BLOCK}
+    public enum ReportType{BUG, USER_BLOCK, OWN_BLOCK, PROJECT, COMMENT}
 
     @Id
     @Column
@@ -33,7 +33,7 @@ public class Report {
     @Column(length = 500)
     private String url;
 
-    @Column(length = Properties.db.messageLength)
+    @Column(length = EntityParams.messageLength)
     private String message;
 
     @Column

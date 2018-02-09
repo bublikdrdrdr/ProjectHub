@@ -1,7 +1,9 @@
 package app.services;
 
 import app.entities.db.User;
-import app.entities.rest.SearchParams;
+import app.entities.db.UserBlock;
+import app.entities.etc.SearchParams;
+import app.entities.etc.UserSearchParams;
 import app.exceptions.FieldAvailabilityCheckException;
 import app.exceptions.UserAlreadyExistsException;
 
@@ -13,11 +15,16 @@ import java.util.List;
  */
 public interface UserService {
 
-    void registerUser(User user) throws UserAlreadyExistsException, IllegalFormatException;
+    User get(long id);
+    void register(User user) throws UserAlreadyExistsException, IllegalFormatException;
     boolean checkFieldAvailable(DataType userField) throws FieldAvailabilityCheckException;
     User login(String email, String password);
-    void updateProfile(User user) throws IllegalFormatException;
-    List<User> searchUsers(SearchParams searchParams);
-    long countSearchUsers(SearchParams searchParams);
+    void update(User user) throws IllegalFormatException;
+    List<User> search(UserSearchParams searchParams);
+    long countSearch(UserSearchParams searchParams);
+    void block(UserBlock userBlock);
+    void bookmark(long id);
+    List<User> getBookmarks(SearchParams searchParams);
+    void removeBookmark(long id);
 
 }

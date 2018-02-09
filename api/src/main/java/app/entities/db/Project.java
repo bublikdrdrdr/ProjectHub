@@ -1,7 +1,10 @@
 package app.entities.db;
 
-import app.Properties;
+import app.entities.etc.EntityParams;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -22,7 +25,7 @@ public class Project {
     @Column(nullable = false)
     private Timestamp created;
 
-    @Column
+    @Column(nullable = false)
     private Timestamp posted;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -33,7 +36,7 @@ public class Project {
     @Column(nullable = false)
     private String subject;
 
-    @Column(nullable = false, length = Properties.db.projectContentLength)
+    @Column(nullable = false, length = EntityParams.projectContentLength)
     private String content;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")

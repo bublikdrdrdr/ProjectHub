@@ -1,10 +1,11 @@
-package app.entities.dao;
+package app.entities.dao.implementations;
 
+import app.db.SessionWrapper;
+import app.entities.dao.UserRepository;
 import app.entities.db.User;
-import app.entities.rest.SearchParams;
+import app.entities.etc.UserSearchParams;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,118 +22,108 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public class UsersRepository {
+public class UserRepositoryImpl implements UserRepository{
 
     @Autowired
-    SessionFactory sessionFactory;
-    //private SessionHolder sessionHolder;
+    SessionWrapper sessionWrapper;
 
-    public static final int INCLUDE_IMAGE_FLAG = 0x00000001;
-    public static final int INCLUDE_PROJECTS_FLAG = 0x00000002;
-    public static final int INCLUDE_LIKES_FLAG = 0x00000004;
-    public static final int INCLUDE_COMMENTS_FLAG = 0x00000008;
-    public static final int INCLUDE_BLOCKS_FLAG = 0x00000010;
-    public static final int INCLUDE_BOOKMARKS_FLAG = 0x00000020;
-    public static final int INCLUDE_REPORTS_FLAG = 0x00000040;
-    public static final int INCLUDE_SENT_MESSAGES_FLAG = 0x00000080;
-    public static final int INCLUDE_RECEIVED_MESSAGES_FLAG = 0x00000100;
-
-    public User getUser(long id){
-        return getUser(id, 0);
+    @Override
+    public User get(long id){
+        return get(id, EnumSet.noneOf(UserRepository.Include.class));
     }
 
-    public User getUser(long id, int flags){
-        Session session = null;
+    @Override
+    public User get(long id, EnumSet<Include> includes){
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionWrapper.getSession();
             User user = session.get(User.class, id);
-            if (checkFlag(flags, INCLUDE_IMAGE_FLAG)) Hibernate.initialize(user.getImage());
-            if (checkFlag(flags, INCLUDE_PROJECTS_FLAG)) Hibernate.initialize(user.getProjects());
-            if (checkFlag(flags, INCLUDE_LIKES_FLAG)) Hibernate.initialize(user.getLikedProjects());
-            if (checkFlag(flags, INCLUDE_COMMENTS_FLAG)) Hibernate.initialize(user.getComments());
-            if (checkFlag(flags, INCLUDE_BLOCKS_FLAG)) Hibernate.initialize(user.getBlocks());
-            if (checkFlag(flags, INCLUDE_BOOKMARKS_FLAG)) Hibernate.initialize(user.getBookmarks());
-            if (checkFlag(flags, INCLUDE_REPORTS_FLAG)) Hibernate.initialize(user.getReports());
-            if (checkFlag(flags, INCLUDE_SENT_MESSAGES_FLAG)) Hibernate.initialize(user.getSentMessages());
-            if (checkFlag(flags, INCLUDE_RECEIVED_MESSAGES_FLAG)) Hibernate.initialize(user.getReceivedMessages());
+            if (includes.contains(Include.IMAGES)) Hibernate.initialize(user.getImage());
+            if (includes.contains(Include.PROJECTS)) Hibernate.initialize(user.getProjects());
+            if (includes.contains(Include.LIKES)) Hibernate.initialize(user.getLikedProjects());
+            if (includes.contains(Include.COMMENTS)) Hibernate.initialize(user.getComments());
+            if (includes.contains(Include.BLOCKS)) Hibernate.initialize(user.getBlocks());
+            if (includes.contains(Include.BOOKMARKS)) Hibernate.initialize(user.getBookmarks());
+            if (includes.contains(Include.REPORTS)) Hibernate.initialize(user.getReports());
+            if (includes.contains(Include.SENT_MESSAGES)) Hibernate.initialize(user.getSentMessages());
+            if (includes.contains(Include.RECEIVED_MESSAGES)) Hibernate.initialize(user.getReceivedMessages());
             return user;
         } finally {
-            session.close();
+            sessionWrapper.closeSession();
         }
     }
 
-    private boolean checkFlag(int value, int flag){
-        return ((value&flag)==flag);
-    }
-
-    public User getUserByEmail(String email){
-        Session session = null;
+    @Override
+    public User getByEmail(String email){
         try{
-            session = sessionFactory.openSession();
+            Session session = sessionWrapper.getSession();
             Query query = session.createQuery("FROM User WHERE email LIKE :email");
             query.setParameter("email", email);
             return (User)query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         } finally {
-            session.close();
+            sessionWrapper.closeSession();
         }
     }
 
-    /*public User getUserByUsername(String username){
+    @Override
+    public User getByUsername(String username){
         try{
-            Session session = sessionHolder.getSession();
+            Session session = sessionWrapper.getSession();
             Query query = session.createQuery("FROM User WHERE username LIKE :username");
             query.setParameter("username", username);
             return (User)query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         } finally {
-            sessionHolder.closeSession();
+            sessionWrapper.closeSession();
         }
     }
 
-    public long saveUser(User user){
+    @Override
+    public long save(User user){
         try {
-            Session session = sessionHolder.getSession();
-            sessionHolder.beginTransaction();
+            Session session = sessionWrapper.getSession();
+            sessionWrapper.beginTransaction();
             return (long) session.save(user);
         } catch (Exception e){
-            sessionHolder.rollback();
+            sessionWrapper.rollback();
             throw e;
         } finally {
-            sessionHolder.commit();
-            sessionHolder.closeSession();
+            sessionWrapper.commit();
+            sessionWrapper.closeSession();
         }
     }
 
-    public List<User> searchUsers(SearchParams searchParams){
+    @Override
+    public List<User> search(UserSearchParams searchParams){
         try {
-            Session session = sessionHolder.getSession();
+            Session session = sessionWrapper.getSession();
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
             getSearchQuery(searchParams, criteriaBuilder, query);
             query.select(query.from(User.class));
             return session.createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
         } finally {
-            sessionHolder.closeSession();
+            sessionWrapper.closeSession();
         }
     }
 
-    public long searchCount(SearchParams searchParams){
+    @Override
+    public long count(UserSearchParams searchParams){
         try{
-            Session session = sessionHolder.getSession();
+            Session session = sessionWrapper.getSession();
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
             getSearchQuery(searchParams, criteriaBuilder, query);
             query.select(criteriaBuilder.count(query.from(User.class)));
             return session.createQuery(query).getSingleResult();
         } finally {
-            sessionHolder.closeSession();
+            sessionWrapper.closeSession();
         }
     }
 
-    private CriteriaQuery<?> getSearchQuery(SearchParams searchParams, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> query){
+    private CriteriaQuery<?> getSearchQuery(UserSearchParams searchParams, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> query){
         Root<User> user = query.from(User.class);
         List<Predicate> predicates = new LinkedList<>();
         if (searchParams.email != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(user.get("email")), preparePattern(searchParams.email, searchParams.exact)));
@@ -150,10 +142,10 @@ public class UsersRepository {
             }
         }
         query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
-        if (searchParams.sortBy!= SearchParams.SortBy.NONE) {
+        if (searchParams.getSort()!= UserSearchParams.Sort.NONE) {
             Order order;
             Expression expression;
-            switch (searchParams.sortBy) {
+            switch (searchParams.getSort()) {
                 case REGISTERED: expression = user.get("registered");
                     break;
                 case ONLINE: expression = user.get("last_login");
@@ -162,7 +154,7 @@ public class UsersRepository {
                     break;
                 case SURNAME: expression = user.get("surname");
                     break;
-                default: throw new IllegalArgumentException("Unknown SortBy value: "+searchParams.sortBy.name());
+                default: throw new IllegalArgumentException("Unknown SortBy value: "+searchParams.getSort());
             }
             if (searchParams.desc) order = criteriaBuilder.desc(expression); else order = criteriaBuilder.asc(expression);
             query.orderBy(order);
@@ -179,17 +171,8 @@ public class UsersRepository {
         return '%'+name+'%';
     }
 
-    public void removeUser(User user){
-        try{
-            Session session = sessionHolder.getSession();
-            sessionHolder.beginTransaction();
-            session.remove(user);
-            sessionHolder.commit();
-        } catch (Exception e){
-            sessionHolder.rollback();
-            throw e;
-        } finally {
-            sessionHolder.closeSession();
-        }
-    }*/
+    @Override
+    public void remove(User user){
+        sessionWrapper.remove(user);
+    }
 }

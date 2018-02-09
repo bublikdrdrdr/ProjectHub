@@ -1,11 +1,10 @@
 package app.entities.db;
 
+import app.entities.etc.EntityParams;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-
-import static app.Properties.db.*;
 
 /**
  * Created by Bublik on 11-Dec-17.
@@ -35,7 +34,7 @@ public class Message {
     @Column(name = "deleted_by_sender")
     private boolean deletedBySender;
 
-    @Column(length = messageLength, nullable = false)
+    @Column(length = EntityParams.messageLength, nullable = false)
     private String message;
 
     @Column(nullable = false)
@@ -44,7 +43,7 @@ public class Message {
     @Column
     private boolean seen;
 
-    @Column(length = messageImageBytes)
+    @Column(length = EntityParams.messageImageBytes)
     private byte[] image;
 
     public Message() {

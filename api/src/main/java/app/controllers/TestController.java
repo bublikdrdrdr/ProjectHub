@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.entities.dao.UsersRepository;
+import app.entities.dao.UserRepository;
 import app.entities.db.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository usersRepository;
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<User> getUser(@RequestParam String email){
         try {
-            User user = usersRepository.getUserByEmail(email);
+            User user = usersRepository.getByEmail(email);
             if (user==null) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(user);
         } catch (Exception e){

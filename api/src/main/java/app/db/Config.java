@@ -1,12 +1,14 @@
 package app.db;
 
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -54,5 +56,10 @@ public class Config {
         properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
         return properties;
+    }
+
+    @ExceptionHandler(BeanCreationException.class)
+    public void handler(){
+        System.out.println("FUUUUUUCK");
     }
 }
