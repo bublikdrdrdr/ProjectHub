@@ -1,5 +1,6 @@
 package app.service;
 
+import app.exception.InvalidTypeException;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
@@ -29,7 +30,7 @@ public class UserDataCheckerImpl implements UserDataChecker {
             case PASSWORD:
                 return content.length() > 6;
             default:
-                throw new RuntimeException("Unknown check type: " + type.name());
+                throw new InvalidTypeException(type);
         }
     }
 }

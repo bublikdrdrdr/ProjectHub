@@ -1,5 +1,6 @@
 package app.service;
 
+import app.exception.InvalidFieldFormatException;
 import app.repository.entity.User;
 import app.repository.entity.UserBlock;
 import app.repository.etc.SearchParams;
@@ -16,8 +17,8 @@ import java.util.List;
 public interface UserService {
 
     User get(long id);
-    void register(User user) throws UserAlreadyExistsException, IllegalFormatException;
-    boolean checkFieldAvailable(DataType userField) throws FieldAvailabilityCheckException;
+    void register(User user) throws UserAlreadyExistsException, InvalidFieldFormatException;
+    boolean checkFieldAvailable(DataType userField, String value) throws FieldAvailabilityCheckException;
     User login(String email, String password);
     void update(User user) throws IllegalFormatException;
     List<User> search(UserSearchParams searchParams);

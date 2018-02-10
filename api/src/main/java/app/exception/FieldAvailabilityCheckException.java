@@ -7,13 +7,14 @@ import app.service.DataType;
  */
 public class FieldAvailabilityCheckException extends RuntimeException {
 
-    public DataType userField;
+    private DataType userField;
 
-    public FieldAvailabilityCheckException() {
+    public FieldAvailabilityCheckException(DataType userField, Exception cause) {
+        super("Can't check field availability");
+        this.userField = userField;
     }
 
-    public FieldAvailabilityCheckException(String message, DataType userField) {
-        super(message);
-        this.userField = userField;
+    public DataType getUserField() {
+        return userField;
     }
 }
