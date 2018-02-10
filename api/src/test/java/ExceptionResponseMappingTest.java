@@ -1,4 +1,4 @@
-import app.services.response.ExceptionResponseMapping;
+import app.service.response.ExceptionResponseMapping;
 import org.hibernate.HibernateException;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;

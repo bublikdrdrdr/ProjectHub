@@ -38,8 +38,7 @@ public class Config {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(getDataSource());
         factoryBean.setHibernateProperties(getHibernateProperties());
-        factoryBean.setPackagesToScan("app.entities.db");
-        //factoryBean.setAnnotatedPackages("app.entities.db");
+        factoryBean.setPackagesToScan("app.repository.entity");
         return factoryBean;
     }
 
@@ -56,10 +55,5 @@ public class Config {
         properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
         return properties;
-    }
-
-    @ExceptionHandler(BeanCreationException.class)
-    public void handler(){
-        System.out.println("FUUUUUUCK");
     }
 }
