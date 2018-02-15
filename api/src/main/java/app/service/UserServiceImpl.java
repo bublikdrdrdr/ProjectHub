@@ -86,11 +86,6 @@ public class UserServiceImpl implements UserService {
     @Value("${permission.can_update_username:false}")
     public boolean canUpdateUsername;
 
-    @PostConstruct
-    public void test(){
-        System.out.println("here");
-    }
-
     @Override
     public void update(User user) throws InvalidFieldFormatException {
         User dbUser = userRepository.get(user.getId());

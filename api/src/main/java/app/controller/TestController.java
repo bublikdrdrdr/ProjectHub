@@ -31,9 +31,4 @@ public class TestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    @RequestMapping("test")
-    public void test(){
-        SearchParams searchParams = new SearchParams();
-    }
 }
