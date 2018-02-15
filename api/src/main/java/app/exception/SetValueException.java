@@ -3,7 +3,7 @@ package app.exception;
 /**
  * Created by Bublik on 09-Nov-17.
  */
-public class SetValueException extends Exception {
+public class SetValueException extends RuntimeException {
 
     public SetValueException() {
     }

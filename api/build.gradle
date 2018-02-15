@@ -33,7 +33,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     //security
     //compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2'
-    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
     //db-sqlite
     //compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
     //db-mysql

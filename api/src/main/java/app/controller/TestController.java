@@ -2,6 +2,7 @@ package app.controller;
 
 import app.repository.dao.UserRepository;
 import app.repository.entity.User;
+import app.repository.etc.SearchParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +30,10 @@ public class TestController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @RequestMapping("test")
+    public void test(){
+        SearchParams searchParams = new SearchParams();
     }
 }
