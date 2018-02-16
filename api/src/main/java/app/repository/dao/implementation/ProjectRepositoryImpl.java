@@ -55,8 +55,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
         try {
             Session session = wrapper.getSession();
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Project> query = criteriaBuilder.createQuery(Project.class);
-            getSearchQuery(searchParams, criteriaBuilder, query);
+            CriteriaQuery<Project> query = getSearchQuery(searchParams, criteriaBuilder, Project.class);
             query.select(query.from(Project.class));
             return session.createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
         } finally {
@@ -69,8 +68,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
         try{
             Session session = wrapper.getSession();
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
-            getSearchQuery(searchParams, criteriaBuilder, query);
+            CriteriaQuery<Long> query = getSearchQuery(searchParams, criteriaBuilder, Long.class);
             query.select(criteriaBuilder.count(query.from(Project.class)));
             return session.createQuery(query).getSingleResult();
         } finally {
@@ -83,8 +81,8 @@ public class ProjectRepositoryImpl implements ProjectRepository{
         wrapper.remove(project);
     }
 
-
-    private CriteriaQuery<?> getSearchQuery(ProjectSearchParams searchParams, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> query){
+    private <T> CriteriaQuery<T> getSearchQuery(ProjectSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
+        CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<Project> project = query.from(Project.class);
         List<Predicate> predicates = new LinkedList<>();
         if (searchParams.authorId != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("author")), searchParams.authorId.toString()));

@@ -88,6 +88,8 @@ public class UserRepositoryImpl implements UserRepository{
         try {
             Session session = sessionWrapper.getSession();
             sessionWrapper.beginTransaction();
+            /*session.saveOrUpdate(user);
+            return user.getId();*/
             if (user.getId()==null || session.get(User.class, user.getId())==null) {
                 return (long) session.save(user);
             } else {
@@ -106,8 +108,7 @@ public class UserRepositoryImpl implements UserRepository{
         try {
             Session session = sessionWrapper.getSession();
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-            getSearchQuery(searchParams, criteriaBuilder, query);
+            CriteriaQuery<User> query = getSearchQuery(searchParams, criteriaBuilder, User.class);
             query.select(query.from(User.class));
             return session.createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
         } finally {
@@ -120,8 +121,7 @@ public class UserRepositoryImpl implements UserRepository{
         try{
             Session session = sessionWrapper.getSession();
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
-            getSearchQuery(searchParams, criteriaBuilder, query);
+            CriteriaQuery<Long> query = getSearchQuery(searchParams, criteriaBuilder, Long.class);
             query.select(criteriaBuilder.count(query.from(User.class)));
             return session.createQuery(query).getSingleResult();
         } finally {
@@ -129,7 +129,8 @@ public class UserRepositoryImpl implements UserRepository{
         }
     }
 
-    private CriteriaQuery<?> getSearchQuery(UserSearchParams searchParams, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> query){
+    private <T> CriteriaQuery<T> getSearchQuery(UserSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
+        CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<User> user = query.from(User.class);
         List<Predicate> predicates = new LinkedList<>();
         if (searchParams.email != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(user.get("email")), preparePattern(searchParams.email, searchParams.exact)));

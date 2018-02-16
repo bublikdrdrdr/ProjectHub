@@ -1,5 +1,7 @@
 package app;
 
+import app.repository.dao.UserRepository;
+import app.repository.entity.User;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +30,6 @@ import javax.persistence.EntityManagerFactory;
         FallbackWebSecurityAutoConfiguration.class,
         OAuth2AutoConfiguration.class})
 public class Main {
-
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
