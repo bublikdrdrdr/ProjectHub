@@ -3,9 +3,12 @@ package app.repository.dao.implementation;
 import app.db.SessionWrapper;
 import app.repository.dao.UserRepository;
 import app.repository.entity.User;
+import app.repository.entity.UserBlock;
 import app.repository.etc.UserSearchParams;
+import javafx.util.converter.TimeStringConverter;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,9 +16,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * Created by Bublik on 19-Nov-17.
@@ -85,10 +88,13 @@ public class UserRepositoryImpl implements UserRepository{
         try {
             Session session = sessionWrapper.getSession();
             sessionWrapper.beginTransaction();
-            return (long) session.save(user);
-        } catch (Exception e){
-            sessionWrapper.rollback();
-            throw e;
+            if (user.getId()==null || session.get(User.class, user.getId())==null) {
+                return (long) session.save(user);
+            } else {
+                session.get(User.class, user.getId());
+                session.merge(user);
+                return user.getId();
+            }
         } finally {
             sessionWrapper.commit();
             sessionWrapper.closeSession();

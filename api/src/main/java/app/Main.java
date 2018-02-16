@@ -27,16 +27,9 @@ import javax.persistence.EntityManagerFactory;
         SecurityFilterAutoConfiguration.class,
         FallbackWebSecurityAutoConfiguration.class,
         OAuth2AutoConfiguration.class})
-@Configuration
-//@PropertySource("service.properties")
 public class Main {
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
-
-    /*@Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }*/
 }

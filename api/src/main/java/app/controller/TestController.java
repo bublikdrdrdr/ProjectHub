@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.repository.dao.UserRepository;
+import app.repository.dao.implementation.UserRepositoryImpl;
 import app.repository.entity.User;
 import app.repository.etc.SearchParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,13 @@ public class TestController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @RequestMapping(value = "/test")
+    public Object test(){
+        User user = usersRepository.get(1);
+        user.setName("lkasjkasjd");
+        usersRepository.save(user);
+        return usersRepository.get(1);
     }
 }
