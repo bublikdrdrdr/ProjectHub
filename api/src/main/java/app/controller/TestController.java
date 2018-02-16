@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
+import java.util.Random;
 
 /**
  * Created by Bublik on 20-Nov-17.
@@ -38,8 +39,12 @@ public class TestController {
     @RequestMapping(value = "/test")
     public Object test(){
         User user = usersRepository.get(1);
-        user.setName("aaaaaa");
-        user = new User("uuuuuuuu@asd.asdad", "uuuuuuuuuu", "asdasd", "asdasd", "adsasd", "asdasd", new Timestamp(System.currentTimeMillis()), null);
+        user.setName("asd");
+        Random random = new Random();
+        //user = new User("uu"+random.nextInt()+"uu@asd.asdad", "uuuuu"+random.nextInt()+"uuuuu", "asdasd", "asdasd", "adsasd", "asdasd", new Timestamp(System.currentTimeMillis()), null);
+        user.setEmail("uu"+random.nextInt()+"uu@asd.asdad");
+        user.setUsername("uu"+random.nextInt()+"uu");
+        //user.setId(null);
         return usersRepository.get(usersRepository.save(user));
     }
 }

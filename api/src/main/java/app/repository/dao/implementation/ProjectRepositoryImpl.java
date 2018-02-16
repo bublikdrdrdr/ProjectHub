@@ -5,6 +5,7 @@ import app.repository.dao.ProjectRepository;
 import app.repository.entity.Project;
 import app.repository.etc.ProjectSearchParams;
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,12 +20,9 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public class ProjectRepositoryImpl implements ProjectRepository{
+public class ProjectRepositoryImpl extends AbstractRepository implements ProjectRepository{
 
-    @Autowired
-    SessionWrapper wrapper;
-
-    public Project getProject(long id){
+    public Project get(long id){
         try{
             Session session = wrapper.getSession();
             Project project = session.get(Project.class, id);
@@ -38,26 +36,18 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
     @Override
-    public long saveProject(Project project) {
-        try{
-            Session session = wrapper.getSession();
-            wrapper.beginTransaction();
-            long id = (long)session.save(project);
-            wrapper.commit();
-            return id;
-        } finally {
-            wrapper.closeSession();
-        }
+    public long save(Project project) {
+        super.save(project);
+        return project.getId();
     }
 
     @Override
     public List<Project> search(ProjectSearchParams searchParams) {
         try {
-            Session session = wrapper.getSession();
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
             CriteriaQuery<Project> query = getSearchQuery(searchParams, criteriaBuilder, Project.class);
             query.select(query.from(Project.class));
-            return session.createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
+            return wrapper.getSession().createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
         } finally {
             wrapper.closeSession();
         }
@@ -66,11 +56,10 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     @Override
     public long count(ProjectSearchParams searchParams) {
         try{
-            Session session = wrapper.getSession();
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
             CriteriaQuery<Long> query = getSearchQuery(searchParams, criteriaBuilder, Long.class);
             query.select(criteriaBuilder.count(query.from(Project.class)));
-            return session.createQuery(query).getSingleResult();
+            return wrapper.getSession().createQuery(query).getSingleResult();
         } finally {
             wrapper.closeSession();
         }
@@ -78,7 +67,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
 
     @Override
     public void remove(Project project) {
-        wrapper.remove(project);
+        super.remove(project);
     }
 
     private <T> CriteriaQuery<T> getSearchQuery(ProjectSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){

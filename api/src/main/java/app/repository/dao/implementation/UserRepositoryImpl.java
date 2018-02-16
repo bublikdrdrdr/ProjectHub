@@ -7,6 +7,7 @@ import app.repository.entity.UserBlock;
 import app.repository.etc.UserSearchParams;
 import javafx.util.converter.TimeStringConverter;
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -25,10 +26,7 @@ import java.util.*;
  */
 @Repository
 @Transactional
-public class UserRepositoryImpl implements UserRepository{
-
-    @Autowired
-    SessionWrapper sessionWrapper;
+public class UserRepositoryImpl extends AbstractRepository implements UserRepository{
 
     @Override
     public User get(long id){
@@ -38,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository{
     @Override
     public User get(long id, EnumSet<Include> includes){
         try {
-            Session session = sessionWrapper.getSession();
+            Session session = wrapper.getSession();
             User user = session.get(User.class, id);
             if (includes.contains(Include.IMAGES)) Hibernate.initialize(user.getImage());
             if (includes.contains(Include.PROJECTS)) Hibernate.initialize(user.getProjects());
@@ -51,81 +49,65 @@ public class UserRepositoryImpl implements UserRepository{
             if (includes.contains(Include.RECEIVED_MESSAGES)) Hibernate.initialize(user.getReceivedMessages());
             return user;
         } finally {
-            sessionWrapper.closeSession();
+            wrapper.closeSession();
         }
     }
 
     @Override
     public User getByEmail(String email){
         try{
-            Session session = sessionWrapper.getSession();
+            Session session = wrapper.getSession();
             Query query = session.createQuery("FROM User WHERE email LIKE :email");
             query.setParameter("email", email);
             return (User)query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         } finally {
-            sessionWrapper.closeSession();
+            wrapper.closeSession();
         }
     }
 
     @Override
     public User getByUsername(String username){
         try{
-            Session session = sessionWrapper.getSession();
+            Session session = wrapper.getSession();
             Query query = session.createQuery("FROM User WHERE username LIKE :username");
             query.setParameter("username", username);
             return (User)query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         } finally {
-            sessionWrapper.closeSession();
+            wrapper.closeSession();
         }
     }
 
     @Override
     public long save(User user){
-        try {
-            Session session = sessionWrapper.getSession();
-            sessionWrapper.beginTransaction();
-            /*session.saveOrUpdate(user);
-            return user.getId();*/
-            if (user.getId()==null || session.get(User.class, user.getId())==null) {
-                return (long) session.save(user);
-            } else {
-                session.get(User.class, user.getId());
-                session.merge(user);
-                return user.getId();
-            }
-        } finally {
-            sessionWrapper.commit();
-            sessionWrapper.closeSession();
-        }
+        super.save(user);
+        return user.getId();
     }
 
     @Override
     public List<User> search(UserSearchParams searchParams){
         try {
-            Session session = sessionWrapper.getSession();
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
             CriteriaQuery<User> query = getSearchQuery(searchParams, criteriaBuilder, User.class);
             query.select(query.from(User.class));
-            return session.createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
+            return wrapper.getSession().createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
         } finally {
-            sessionWrapper.closeSession();
+            wrapper.closeSession();
         }
     }
 
     @Override
     public long count(UserSearchParams searchParams){
         try{
-            Session session = sessionWrapper.getSession();
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
             CriteriaQuery<Long> query = getSearchQuery(searchParams, criteriaBuilder, Long.class);
             query.select(criteriaBuilder.count(query.from(User.class)));
-            return session.createQuery(query).getSingleResult();
+            return wrapper.getSession().createQuery(query).getSingleResult();
         } finally {
-            sessionWrapper.closeSession();
+            wrapper.closeSession();
         }
     }
 
@@ -180,6 +162,6 @@ public class UserRepositoryImpl implements UserRepository{
 
     @Override
     public void remove(User user){
-        sessionWrapper.remove(user);
+        super.remove(user);
     }
 }

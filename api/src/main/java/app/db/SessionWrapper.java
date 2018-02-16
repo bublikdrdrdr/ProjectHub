@@ -29,9 +29,18 @@ public class SessionWrapper {
     public Session getSession() throws HibernateException{
         if (sessionFactory==null) throw new HibernateException("SessionFactory is null");
         if (session==null || !session.isOpen()){
-            session = sessionFactory.openSession();
+            session = openSession();
         }
         return session;
+    }
+
+    public Session openSession(){
+        /*try{
+            if (session!=null && session.isOpen()){
+                session.close();
+            }
+        } catch (HibernateException ignored){}*/
+        return sessionFactory.openSession();
     }
 
     public Transaction beginTransaction(){
@@ -54,20 +63,6 @@ public class SessionWrapper {
             if (session!=null) session.close();
         } catch (HibernateException he){
             logger.log(Logger.Level.WARN, he);
-        }
-    }
-
-    public void remove(Object object){
-        try{
-            Session session = getSession();
-            beginTransaction();
-            session.remove(object);
-            commit();
-        } catch (Exception e){
-            rollback();
-            throw e;
-        } finally {
-            closeSession();
         }
     }
 }
