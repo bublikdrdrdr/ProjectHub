@@ -4,6 +4,7 @@ import app.db.SessionWrapper;
 import app.repository.dao.ProjectRepository;
 import app.repository.entity.Project;
 import app.repository.etc.ProjectSearchParams;
+import app.repository.etc.SearchParams;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -22,13 +23,17 @@ import java.util.List;
 @Transactional
 public class ProjectRepositoryImpl extends AbstractRepository implements ProjectRepository{
 
-    public Project get(long id){
+    @Override
+    public Project get(long id) {
+        return get(id, false);
+    }
+
+    public Project get(long id, boolean includeAttachments){
         try{
             Session session = wrapper.getSession();
             Project project = session.get(Project.class, id);
-            Hibernate.initialize(project.getAttachments());
+            if (includeAttachments) Hibernate.initialize(project.getAttachments());
             Hibernate.initialize(project.getAuthor());
-            Hibernate.initialize(project.getAttachments());
             return project;
         } finally {
             wrapper.closeSession();
@@ -37,7 +42,7 @@ public class ProjectRepositoryImpl extends AbstractRepository implements Project
 
     @Override
     public long save(Project project) {
-        super.save(project);
+        super.saveEntity(project);
         return project.getId();
     }
 
@@ -67,7 +72,7 @@ public class ProjectRepositoryImpl extends AbstractRepository implements Project
 
     @Override
     public void remove(Project project) {
-        super.remove(project);
+        super.removeEntity(project);
     }
 
     private <T> CriteriaQuery<T> getSearchQuery(ProjectSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
@@ -101,5 +106,4 @@ public class ProjectRepositoryImpl extends AbstractRepository implements Project
     private String preparePattern(String s, boolean exact){
         return (exact?"%":"")+s.toUpperCase()+(exact?"%":"");
     }
-
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by Bublik on 21-Nov-17.
@@ -38,21 +38,21 @@ public class Project {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     @JsonIgnore
-    private Set<ProjectAttachment> attachments;
+    private List<ProjectAttachment> attachments;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     @JsonIgnore
-    private Set<LikedProject> likes;
+    private List<LikedProject> likes;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     @JsonIgnore
-    private Set<ProjectComment> projectComments;
+    private List<ProjectComment> projectComments;
 
 
     public Project() {
     }
 
-    public Project(Long id, Timestamp created, User author, String subject, String content, Set<ProjectAttachment> attachments) {
+    public Project(Long id, Timestamp created, User author, String subject, String content, List<ProjectAttachment> attachments) {
         this.id = id;
         this.created = created;
         this.author = author;
@@ -101,11 +101,11 @@ public class Project {
         this.content = content;
     }
 
-    public Set<ProjectAttachment> getAttachments() {
+    public List<ProjectAttachment> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(Set<ProjectAttachment> attachments) {
+    public void setAttachments(List<ProjectAttachment> attachments) {
         this.attachments = attachments;
     }
 }

@@ -22,7 +22,7 @@ public class Report {
     private Long id;
 
     @Column
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private ReportType type;
 
     @ManyToOne(fetch = FetchType.LAZY)

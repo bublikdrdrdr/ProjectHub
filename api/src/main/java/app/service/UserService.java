@@ -28,5 +28,6 @@ public interface UserService {
     void bookmark(long id);
     List<User> getBookmarks(SearchParams searchParams);
     void removeBookmark(long id);
+    void updateOnline(long id);
 
 }

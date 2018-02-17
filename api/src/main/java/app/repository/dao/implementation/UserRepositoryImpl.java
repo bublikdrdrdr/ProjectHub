@@ -4,6 +4,7 @@ import app.db.SessionWrapper;
 import app.repository.dao.UserRepository;
 import app.repository.entity.User;
 import app.repository.entity.UserBlock;
+import app.repository.etc.SearchParams;
 import app.repository.etc.UserSearchParams;
 import javafx.util.converter.TimeStringConverter;
 import org.hibernate.Hibernate;
@@ -83,7 +84,7 @@ public class UserRepositoryImpl extends AbstractRepository implements UserReposi
 
     @Override
     public long save(User user){
-        super.save(user);
+        super.saveEntity(user);
         return user.getId();
     }
 
@@ -162,6 +163,6 @@ public class UserRepositoryImpl extends AbstractRepository implements UserReposi
 
     @Override
     public void remove(User user){
-        super.remove(user);
+        super.removeEntity(user);
     }
 }

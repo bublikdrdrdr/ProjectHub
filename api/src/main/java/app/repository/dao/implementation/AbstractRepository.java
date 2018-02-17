@@ -2,23 +2,18 @@ package app.repository.dao.implementation;
 
 import app.db.SessionWrapper;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import javax.transaction.Transactional;
 
 public abstract class AbstractRepository {
 
     @Autowired
     SessionWrapper wrapper;
 
-    public long save(Object object){
+    protected void saveEntity(Object object){
         try {
             wrapper.beginTransaction();
             wrapper.getSession().saveOrUpdate(object);
             wrapper.commit();
-            return 0;
         } catch (HibernateException he){
             wrapper.rollback();
             throw he;
@@ -27,7 +22,7 @@ public abstract class AbstractRepository {
         }
     }
 
-    public void remove(Object object){
+    protected void removeEntity(Object object){
         try{
             wrapper.beginTransaction();
             wrapper.getSession().remove(object);

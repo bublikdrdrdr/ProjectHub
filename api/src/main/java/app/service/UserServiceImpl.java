@@ -131,6 +131,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void updateOnline(long id) {
+
+    }
+
     private EnumSet<ConflictField> checkConflicts(User user){
         EnumSet<ConflictField> conflicts = EnumSet.noneOf(ConflictField.class);
         if (checkFieldAvailable(DataType.NICKNAME, user.getUsername())) conflicts.add(ConflictField.USERNAME);

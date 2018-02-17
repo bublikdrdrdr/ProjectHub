@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by Bublik on 10-Nov-17.
@@ -53,27 +53,27 @@ public class User {
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<Project> projects;
+    private List<Project> projects;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<LikedProject> likedProjects;
+    private List<LikedProject> likedProjects;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<ProjectComment> comments;
+    private List<ProjectComment> comments;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<UserBlock> blocks;
+    private List<UserBlock> blocks;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<UserBookmark> bookmarks;
+    private List<UserBookmark> bookmarks;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<Report> reports;
+    private List<Report> reports;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -99,8 +99,8 @@ public class User {
     }
 
     public User(Long id, String email, String username, String name, String surname, String password, String passwordSalt, Image image,
-                Timestamp registered, Timestamp lastOnline, Set<Project> projects, Set<LikedProject> likedProjects,
-                Set<ProjectComment> comments, Set<UserBlock> blocks, Set<UserBookmark> bookmarks, Set<Report> reports,
+                Timestamp registered, Timestamp lastOnline, List<Project> projects, List<LikedProject> likedProjects,
+                List<ProjectComment> comments, List<UserBlock> blocks, List<UserBookmark> bookmarks, List<Report> reports,
                 List<Message> sentMessages, List<Message> receivedMessages) {
         this.id = id;
         this.email = email;
@@ -202,51 +202,51 @@ public class User {
         this.lastOnline = lastOnline;
     }
 
-    public Set<Project> getProjects() {
+    public List<Project> getProjects() {
         return projects;
     }
 
-    public void setProjects(Set<Project> projects) {
+    public void setProjects(List<Project> projects) {
         this.projects = projects;
     }
 
-    public Set<LikedProject> getLikedProjects() {
+    public List<LikedProject> getLikedProjects() {
         return likedProjects;
     }
 
-    public void setLikedProjects(Set<LikedProject> likedProjects) {
+    public void setLikedProjects(List<LikedProject> likedProjects) {
         this.likedProjects = likedProjects;
     }
 
-    public Set<ProjectComment> getComments() {
+    public List<ProjectComment> getComments() {
         return comments;
     }
 
-    public void setComments(Set<ProjectComment> comments) {
+    public void setComments(List<ProjectComment> comments) {
         this.comments = comments;
     }
 
-    public Set<UserBlock> getBlocks() {
+    public List<UserBlock> getBlocks() {
         return blocks;
     }
 
-    public void setBlocks(Set<UserBlock> blocks) {
+    public void setBlocks(List<UserBlock> blocks) {
         this.blocks = blocks;
     }
 
-    public Set<UserBookmark> getBookmarks() {
+    public List<UserBookmark> getBookmarks() {
         return bookmarks;
     }
 
-    public void setBookmarks(Set<UserBookmark> bookmarks) {
+    public void setBookmarks(List<UserBookmark> bookmarks) {
         this.bookmarks = bookmarks;
     }
 
-    public Set<Report> getReports() {
+    public List<Report> getReports() {
         return reports;
     }
 
-    public void setReports(Set<Report> reports) {
+    public void setReports(List<Report> reports) {
         this.reports = reports;
     }
 

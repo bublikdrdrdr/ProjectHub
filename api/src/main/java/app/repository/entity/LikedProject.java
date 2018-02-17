@@ -20,7 +20,7 @@ public class LikedProject {
     private Long id;
 
     @Column(nullable = false)
-    @Enumerated(value = EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private MarkType markType;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
