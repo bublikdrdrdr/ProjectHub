@@ -17,7 +17,7 @@ public class ReportSearchParams extends SearchParams {
     public String message;
     public Timestamp sentBefore;
     public Timestamp sentAfter;
-    public boolean activeOnly = false;
+    public boolean activeOnly;
 
     public ReportSearchParams(Sort sort, Boolean desc, Integer first, Integer count, User admin, User sender, Report.ReportType reportType, String message, Timestamp sentBefore, Timestamp sentAfter, Boolean activeOnly) {
         super(sort.toString(), desc, first, count);
@@ -27,7 +27,7 @@ public class ReportSearchParams extends SearchParams {
         this.message = message;
         this.sentBefore = sentBefore;
         this.sentAfter = sentAfter;
-        if (activeOnly!=null) this.activeOnly = activeOnly;
+        this.activeOnly = nullToDefault(activeOnly, false);
     }
 
     public Sort getSort(){

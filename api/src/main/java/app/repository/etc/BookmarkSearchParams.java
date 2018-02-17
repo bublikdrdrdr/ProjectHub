@@ -14,7 +14,7 @@ public class BookmarkSearchParams extends SearchParams {
 
     protected BookmarkSearchParams(Sort sort, User user, Boolean desc, Integer first, Integer count, Boolean onlineOnly) {
         super(sort.toString(), desc, first, count);
-        if (onlineOnly!=null) this.onlineOnly = onlineOnly;
+        this.onlineOnly = nullToDefault(onlineOnly, false);
         this.user = user;
     }
 

@@ -7,11 +7,11 @@ public class ProjectSearchParams extends SearchParams{
     public Long authorId;
     public String subject;
     public String content;
-    public boolean exact = false;
+    public boolean exact;
 
     public ProjectSearchParams(Boolean exact, String sort, Boolean desc, Integer first, Integer count, Long authorId, String subject, String content) {
         super(sort, desc, first, count);
-        if (exact!=null) this.exact = exact;
+        this.exact = nullToDefault(exact, false);
         this.authorId = authorId;
         this.subject = subject;
         this.content = content;
