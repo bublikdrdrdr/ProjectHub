@@ -19,6 +19,7 @@ public interface ProjectService {
     long comment(ProjectComment projectComment);
     void removeComment(long id);
     void like(long id);
+    void dislike(long id);
     void unlike(long id);
     List<Project> search(ProjectSearchParams searchParams);
     long searchCount(ProjectSearchParams searchParams);

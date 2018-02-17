@@ -1,0 +1,70 @@
+interface done *
+dao/service done **
+pagination %
+
+entities{
+	user **
+	project **
+	message *
+	like *
+	image *
+	project attachment *
+	project comment *
+	report *
+	block *
+	bookmark *
+}
+
+methods{
+
+	get{
+		user info *
+		user image
+		user projects %*
+		my projects %*
+		project info *
+		project attachments
+		project likes %
+		project comments %
+		dialogs list %*
+		my messages %*
+		
+		search{
+			users %*
+			projects %
+			messages %
+			bookmarks %*
+			blocks %(admin)
+			reports %(admin)
+		}
+		check user info *
+	}
+	add{
+		register user *
+		add project *
+		send message
+		like/dislike project *
+		add image
+		add project attachment *
+		add comment *
+		send report *
+		block user (admin)*
+		add bookmark *
+		
+		set online *
+	}
+	edit{
+		user info *
+		edit project *
+		post project *
+		edit block (admin)
+		restore message
+	}
+	delete{
+		project *
+		message
+		image
+		project attachment *
+		comment *
+		bookmark *
+	}

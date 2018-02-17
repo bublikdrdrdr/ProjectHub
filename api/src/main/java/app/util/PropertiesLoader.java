@@ -33,7 +33,7 @@ public class PropertiesLoader {
             if (Double.class == clazz) return (T) (Double.valueOf(value));
             if (String.class == clazz) return (T) value;
         } catch (ClassCastException e){
-            throw new IllegalArgumentException("Property value type and default value type must be same", e);
+            throw new IllegalArgumentException("Property value and defaultValue must have same type", e);
         }
         throw new IllegalArgumentException("Unknown class " + defaultValue.getClass().getName());
     }

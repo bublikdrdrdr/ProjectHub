@@ -26,8 +26,7 @@ public interface UserService {
     long countSearch(UserSearchParams searchParams);
     void block(UserBlock userBlock);
     void bookmark(long id);
-    List<User> getBookmarks(SearchParams searchParams);
+    List<User> getBookmarks(SearchParams searchParams);//fixme
     void removeBookmark(long id);
     void updateOnline(long id);
-
 }
