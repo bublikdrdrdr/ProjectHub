@@ -19,12 +19,10 @@ public class UserBookmark {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User bookmarked;
 
     @Column(nullable = false)

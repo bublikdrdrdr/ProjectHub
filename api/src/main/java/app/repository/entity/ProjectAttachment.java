@@ -20,12 +20,12 @@ public class ProjectAttachment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    @JsonIgnore
     private Project project;
 
     @OneToOne(optional = false)//todo: test
     private AttachmentType attachmentType;
 
+    @Deprecated
     @Column(length = EntityParams.projectAttachmentTextLength)
     private String textValue;
 

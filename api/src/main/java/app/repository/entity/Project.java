@@ -27,7 +27,6 @@ public class Project {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn
-    @JsonIgnore
     private User author;
 
     @Column(nullable = false)
@@ -37,15 +36,12 @@ public class Project {
     private String content;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-    @JsonIgnore
     private List<ProjectAttachment> attachments;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-    @JsonIgnore
     private List<LikedProject> likes;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-    @JsonIgnore
     private List<ProjectComment> projectComments;
 
 

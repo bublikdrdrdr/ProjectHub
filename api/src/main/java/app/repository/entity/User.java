@@ -16,6 +16,8 @@ import java.util.List;
 @Table(name = "users")
 public class User {
 
+    //TODO: add boolean admin field
+
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,71 +36,57 @@ public class User {
     private String surname;
 
     @Column(nullable = false)
-    @JsonIgnore
     private String password;
 
-    @Column(name = "password_salt", nullable = false)
-    @JsonIgnore
-    private String passwordSalt;
+    /*@Column(name = "password_salt", nullable = false)
+    private String passwordSalt;*/
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     private Image image;
 
-    @Column
+    @Column(nullable = false)
     private Timestamp registered;
 
     @Column(name = "last_login")
     private Timestamp lastOnline;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Project> projects;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<LikedProject> likedProjects;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<ProjectComment> comments;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<UserBlock> blocks;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<UserBookmark> bookmarks;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Report> reports;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Message> sentMessages;
 
     @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Message> receivedMessages;
 
 
     public User() {
     }
 
-    public User(String email, String username, String name, String surname, String password, String passwordSalt, Timestamp registered, Timestamp lastOnline) {
-        this.email = email;
-        this.username = username;
-        this.name = name;
-        this.surname = surname;
-        this.password = password;
-        this.passwordSalt = passwordSalt;
-        this.registered = registered;
-        this.lastOnline = lastOnline;
+    public User(String email, String username, String name, String surname, String password, Timestamp registered, Timestamp lastOnline) {
+        this(null, email, username, name, surname, password, registered, lastOnline);
     }
 
-    public User(Long id, String email, String username, String name, String surname, String password, String passwordSalt, Image image,
+    public User(Long id, String email, String username, String name, String surname, String password, Timestamp registered, Timestamp lastOnline) {
+        this(id, email, username, name, surname, password, null, registered, lastOnline, null, null, null, null, null, null, null, null);
+    }
+
+    public User(Long id, String email, String username, String name, String surname, String password, Image image,
                 Timestamp registered, Timestamp lastOnline, List<Project> projects, List<LikedProject> likedProjects,
                 List<ProjectComment> comments, List<UserBlock> blocks, List<UserBookmark> bookmarks, List<Report> reports,
                 List<Message> sentMessages, List<Message> receivedMessages) {
@@ -108,7 +96,6 @@ public class User {
         this.name = name;
         this.surname = surname;
         this.password = password;
-        this.passwordSalt = passwordSalt;
         this.image = image;
         this.registered = registered;
         this.lastOnline = lastOnline;
@@ -121,6 +108,8 @@ public class User {
         this.sentMessages = sentMessages;
         this.receivedMessages = receivedMessages;
     }
+
+
 
     public Long getId() {
         return id;
@@ -168,14 +157,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
     }
 
     public Image getImage() {
@@ -264,5 +245,12 @@ public class User {
 
     public void setReceivedMessages(List<Message> receivedMessages) {
         this.receivedMessages = receivedMessages;
+    }
+
+    public boolean isBlocked(Timestamp now) {
+        for (UserBlock userBlock: getBlocks()){
+            if (userBlock.getStart().before(now) && userBlock.getEnd().after(now) && !userBlock.getCanceled()) return true;
+        }
+        return false;
     }
 }

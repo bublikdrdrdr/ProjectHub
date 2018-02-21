@@ -20,12 +20,10 @@ public class Message {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User receiver;
 
     @Column(name = "deleted_by_receiver")
@@ -44,6 +42,7 @@ public class Message {
     private boolean seen;
 
     @Column(length = EntityParams.messageImageBytes)
+    @Basic(fetch = FetchType.LAZY)
     private byte[] image;
 
     public Message() {

@@ -16,6 +16,9 @@ public class Report {
 
     public enum ReportType{BUG, USER_BLOCK, OWN_BLOCK, PROJECT, COMMENT}
 
+    @Transient
+    public static final ReportType[] reportTypeValues = ReportType.values();
+
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,6 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User sender;
 
     @Column(length = 500)
@@ -41,7 +43,6 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User admin;
 
     @Column

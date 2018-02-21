@@ -25,12 +25,10 @@ public class UserBlock {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn
-    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn
-    @JsonIgnore
     private User admin;
 
     @Column
@@ -41,7 +39,6 @@ public class UserBlock {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User canceledBy;
 
     public UserBlock() {
@@ -106,7 +103,7 @@ public class UserBlock {
         this.comment = comment;
     }
 
-    public Boolean getCanceled() {
+    public boolean getCanceled() {
         return canceled;
     }
 

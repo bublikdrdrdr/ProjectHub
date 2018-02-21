@@ -1,6 +1,8 @@
 package app.repository.entity;
 
 import app.repository.etc.EntityParams;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -21,9 +23,11 @@ public class Image {
     private Timestamp created;
 
     @Column(length = 500)
-    private String url;
+    @Basic(fetch = FetchType.LAZY)
+    private String url;//TODO: do I need this?
 
     @Column(length = EntityParams.userImageBytes)
+    @Basic(fetch = FetchType.LAZY)
     private byte[] file;
 
     public Image() {

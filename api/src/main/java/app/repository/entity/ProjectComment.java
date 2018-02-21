@@ -19,12 +19,10 @@ public class ProjectComment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @JsonIgnore
     private Project project;
 
     @Column(nullable = false)
