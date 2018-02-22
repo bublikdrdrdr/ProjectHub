@@ -1,4 +1,4 @@
-package app.service;
+package app.service.implementation;
 
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

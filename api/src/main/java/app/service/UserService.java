@@ -1,32 +1,27 @@
 package app.service;
 
-import app.exception.InvalidFieldFormatException;
-import app.exception.SetValueException;
+import app.exception.*;
+import app.repository.dto.*;
 import app.repository.entity.User;
 import app.repository.entity.UserBlock;
 import app.repository.etc.SearchParams;
 import app.repository.etc.UserSearchParams;
-import app.exception.FieldAvailabilityCheckException;
-import app.exception.UserAlreadyExistsException;
 
-import java.util.IllegalFormatException;
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
 
 /**
  * Created by Bublik on 22-Dec-17.
  */
 public interface UserService {
 
-    User get(long id);
-    void register(User user) throws UserAlreadyExistsException, InvalidFieldFormatException;
-    boolean checkFieldAvailable(DataType userField, String value) throws FieldAvailabilityCheckException;
-    User login(String email, String password);
-    void update(User user) throws InvalidFieldFormatException, SetValueException;
-    List<User> search(UserSearchParams searchParams);
-    long countSearch(UserSearchParams searchParams);
-    void block(UserBlock userBlock);
-    void bookmark(long id);
-    List<User> getBookmarks(SearchParams searchParams);//fixme
+    UserDTO get(long id) throws EntityNotFoundException;
+    long register(UserRegistrationDTO user) throws UserAlreadyExistsException, InvalidFieldFormatException;
+    boolean checkFieldAvailable(FieldCheckDTO check) throws FieldAvailabilityCheckException;
+    LoginResponseDTO login(LoginRequestDTO request) throws AuthenticationException;
+    void update(UserRegistrationDTO user) throws InvalidFieldFormatException, SetValueException;
+    UserSearchResponseDTO search(UserSearchRequestDTO request);
+    void bookmark(long id) throws EntityNotFoundException, EntityAlreadyExistsException;
+    BookmarkSearchResponseDTO getBookmarks(BookmarkSearchRequestDTO request);
     void removeBookmark(long id);
-    void updateOnline(long id);
+    void updateOnline();
 }

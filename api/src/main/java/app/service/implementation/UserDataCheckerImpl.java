@@ -1,11 +1,14 @@
-package app.service;
+package app.service.implementation;
 
 import app.exception.InvalidTypeException;
+import app.service.DataType;
+import app.service.UserDataChecker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -39,12 +42,9 @@ public class UserDataCheckerImpl implements UserDataChecker {
     }
 
     @Value("${user.forbidden_usernames}")
-    public String[] forbiddenUsernames;
+    private String[] forbiddenUsernames;
 
     private boolean checkNicknameForbidden(String nickname){
-        for (String forbidden: forbiddenUsernames){
-            if (nickname.equals(forbidden) || nickname.equals(forbidden+"s")) return false;
-        }
-        return true;
+        return Arrays.stream(forbiddenUsernames).noneMatch(s -> nickname.equals(s)||nickname.equals(s+"s"));
     }
 }
