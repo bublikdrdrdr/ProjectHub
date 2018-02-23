@@ -48,13 +48,37 @@ public class Project {
     public Project() {
     }
 
-    public Project(Long id, Timestamp created, User author, String subject, String content, List<ProjectAttachment> attachments) {
+    public Project(Long id, Timestamp created, Timestamp posted, User author, String subject, String content) {
         this.id = id;
         this.created = created;
+        this.posted = posted;
         this.author = author;
         this.subject = subject;
         this.content = content;
-        this.attachments = attachments;
+    }
+
+    public Timestamp getPosted() {
+        return posted;
+    }
+
+    public void setPosted(Timestamp posted) {
+        this.posted = posted;
+    }
+
+    public List<LikedProject> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<LikedProject> likes) {
+        this.likes = likes;
+    }
+
+    public List<ProjectComment> getProjectComments() {
+        return projectComments;
+    }
+
+    public void setProjectComments(List<ProjectComment> projectComments) {
+        this.projectComments = projectComments;
     }
 
     public Long getId() {

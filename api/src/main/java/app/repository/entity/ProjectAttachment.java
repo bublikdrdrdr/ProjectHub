@@ -25,11 +25,11 @@ public class ProjectAttachment {
     @OneToOne(optional = false)//todo: test
     private AttachmentType attachmentType;
 
-    @Deprecated
     @Column(length = EntityParams.projectAttachmentTextLength)
     private String textValue;
 
     @Column(length = EntityParams.projectAttachmentBytes)
+    @Basic(fetch = FetchType.LAZY)
     private byte[] blobValue;
 
     public ProjectAttachment() {
