@@ -1,27 +1,25 @@
 package app.service;
 
-import app.repository.entity.Project;
-import app.repository.entity.ProjectAttachment;
-import app.repository.entity.ProjectComment;
-import app.repository.etc.ProjectSearchParams;
+import app.repository.dto.*;
 
 import java.util.List;
 
 public interface ProjectService {
 
-    Project get(long id);
-    long add(Project project);
-    void update(Project project);
+    ProjectDTO get(long id);
+    byte[] getProjectAttachment(long id);
+    ProjectSearchResponseDTO getProjects(ProjectSearchRequestDTO request);
+    List<ProjectAttachmentTypeDTO> getAttachmentTypes();
+    long add(ProjectDTO project);
+    void update(ProjectDTO project);
     void post(long id);
     void remove(long id);
-    long addAttachment(ProjectAttachment attachment);
+    long addAttachment(byte[] value, long attachmentTypeId);
     void removeAttachment(long id);
-    long comment(ProjectComment projectComment);
+    long comment(ProjectCommentDTO comment);
     void removeComment(long id);
+    ProjectCommentSearchResponseDTO getComments(ProjectCommentSearchRequestDTO request);
     void like(long id);
     void dislike(long id);
     void unlike(long id);
-    List<Project> search(ProjectSearchParams searchParams);
-    long searchCount(ProjectSearchParams searchParams);
-
 }
