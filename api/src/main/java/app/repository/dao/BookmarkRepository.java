@@ -7,4 +7,6 @@ import app.repository.etc.BookmarkSearchParams;
 import java.util.List;
 
 public interface BookmarkRepository extends CrudRepository<UserBookmark>, Searchable<UserBookmark, BookmarkSearchParams> {
+
+    UserBookmark getByRelation(User user, User bookmarkedUser);
 }

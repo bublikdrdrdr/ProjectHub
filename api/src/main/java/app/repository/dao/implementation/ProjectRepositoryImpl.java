@@ -2,12 +2,15 @@ package app.repository.dao.implementation;
 
 import app.db.SessionWrapper;
 import app.repository.dao.ProjectRepository;
+import app.repository.entity.AttachmentType;
 import app.repository.entity.Project;
+import app.repository.entity.ProjectAttachment;
 import app.repository.etc.ProjectSearchParams;
 import app.repository.etc.SearchParams;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +24,7 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public class ProjectRepositoryImpl extends AbstractRepository implements ProjectRepository{
+public class ProjectRepositoryImpl extends SearchableRepository<ProjectSearchParams, Project> implements ProjectRepository{
 
     @Override
     public Project get(long id) {
@@ -29,12 +32,28 @@ public class ProjectRepositoryImpl extends AbstractRepository implements Project
     }
 
     public Project get(long id, boolean includeAttachments){
+        return getEntity(Project.class, id, entity -> {
+            if (includeAttachments) Hibernate.initialize(entity.getAttachments());
+            Hibernate.initialize(entity.getAuthor());
+        });
+    }
+
+    @Override
+    public ProjectAttachment getAttachment(long id) {
         try{
-            Session session = wrapper.getSession();
-            Project project = session.get(Project.class, id);
-            if (includeAttachments) Hibernate.initialize(project.getAttachments());
-            Hibernate.initialize(project.getAuthor());
-            return project;
+            ProjectAttachment attachment = wrapper.getSession().get(ProjectAttachment.class, id);
+            Hibernate.initialize(attachment.getBlobValue());
+            return attachment;
+        } finally {
+            wrapper.closeSession();
+        }
+    }
+
+    @Override
+    public List<AttachmentType> getAttachmentTypes() {
+        try {
+            Query<AttachmentType> query = wrapper.getSession().createQuery("FROM AttachmentType", AttachmentType.class);
+            return query.getResultList();
         } finally {
             wrapper.closeSession();
         }
@@ -48,26 +67,12 @@ public class ProjectRepositoryImpl extends AbstractRepository implements Project
 
     @Override
     public List<Project> search(ProjectSearchParams searchParams) {
-        try {
-            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
-            CriteriaQuery<Project> query = getSearchQuery(searchParams, criteriaBuilder, Project.class);
-            query.select(query.from(Project.class));
-            return wrapper.getSession().createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
-        } finally {
-            wrapper.closeSession();
-        }
+        return searchEntities(searchParams, Project.class);
     }
 
     @Override
     public long count(ProjectSearchParams searchParams) {
-        try{
-            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
-            CriteriaQuery<Long> query = getSearchQuery(searchParams, criteriaBuilder, Long.class);
-            query.select(criteriaBuilder.count(query.from(Project.class)));
-            return wrapper.getSession().createQuery(query).getSingleResult();
-        } finally {
-            wrapper.closeSession();
-        }
+        return countEntities(searchParams, Project.class);
     }
 
     @Override
@@ -75,13 +80,29 @@ public class ProjectRepositoryImpl extends AbstractRepository implements Project
         super.removeEntity(project);
     }
 
-    private <T> CriteriaQuery<T> getSearchQuery(ProjectSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
+    @Override
+    protected  <T> CriteriaQuery<T> getSearchQuery(ProjectSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
         CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<Project> project = query.from(Project.class);
         List<Predicate> predicates = new LinkedList<>();
         if (searchParams.authorId != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("author")), searchParams.authorId.toString()));
-        if (searchParams.subject != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("subject")), preparePattern(searchParams.subject, searchParams.exact)));
-        if (searchParams.content != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("content")), preparePattern(searchParams.content, false)));
+        if (searchParams.exact) {
+            if (searchParams.subject != null)
+                predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("subject")), preparePattern(searchParams.subject, false)));
+            if (searchParams.content != null)
+                predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("content")), preparePattern(searchParams.content, false)));
+        } else {
+            List<Predicate> searchContentPredicates = new LinkedList<>();
+            Expression<String> subjectExpression = criteriaBuilder.upper(project.get("subject"));
+            Expression<String> contentExpression = criteriaBuilder.upper(project.get("content"));
+            String subjectPattern = preparePattern(searchParams.subject, false);
+            String contentPattern = preparePattern(searchParams.content, false);
+            searchContentPredicates.add(criteriaBuilder.like(subjectExpression, subjectPattern));
+            searchContentPredicates.add(criteriaBuilder.like(subjectExpression, contentPattern));
+            searchContentPredicates.add(criteriaBuilder.like(contentExpression, subjectPattern));
+            searchContentPredicates.add(criteriaBuilder.like(contentExpression, contentPattern));
+            predicates.add(criteriaBuilder.or((Predicate[])searchContentPredicates.toArray()));
+        }
         query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
         if (searchParams.getSort()!= ProjectSearchParams.Sort.NONE) {
             Order order;
@@ -101,9 +122,5 @@ public class ProjectRepositoryImpl extends AbstractRepository implements Project
             query.orderBy(order);
         }
         return query;
-    }
-
-    private String preparePattern(String s, boolean exact){
-        return (exact?"%":"")+s.toUpperCase()+(exact?"%":"");
     }
 }

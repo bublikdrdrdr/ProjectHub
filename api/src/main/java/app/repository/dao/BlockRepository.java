@@ -8,5 +8,5 @@ import app.repository.etc.SearchParams;
 import java.util.List;
 
 public interface BlockRepository extends CrudRepository<UserBlock>, Searchable<UserBlock, BlockSearchParams> {
-
+    boolean isBlocked(User user);
 }

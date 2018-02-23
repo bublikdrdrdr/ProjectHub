@@ -27,7 +27,7 @@ import java.util.*;
  */
 @Repository
 @Transactional
-public class UserRepositoryImpl extends AbstractRepository implements UserRepository{
+public class UserRepositoryImpl extends SearchableRepository<UserSearchParams, User> implements UserRepository{
 
     @Override
     public User get(long id){
@@ -36,22 +36,17 @@ public class UserRepositoryImpl extends AbstractRepository implements UserReposi
 
     @Override
     public User get(long id, EnumSet<Include> includes){
-        try {
-            Session session = wrapper.getSession();
-            User user = session.get(User.class, id);
-            if (includes.contains(Include.IMAGES)) Hibernate.initialize(user.getImage());
-            if (includes.contains(Include.PROJECTS)) Hibernate.initialize(user.getProjects());
-            if (includes.contains(Include.LIKES)) Hibernate.initialize(user.getLikedProjects());
-            if (includes.contains(Include.COMMENTS)) Hibernate.initialize(user.getComments());
-            if (includes.contains(Include.BLOCKS)) Hibernate.initialize(user.getBlocks());
-            if (includes.contains(Include.BOOKMARKS)) Hibernate.initialize(user.getBookmarks());
-            if (includes.contains(Include.REPORTS)) Hibernate.initialize(user.getReports());
-            if (includes.contains(Include.SENT_MESSAGES)) Hibernate.initialize(user.getSentMessages());
-            if (includes.contains(Include.RECEIVED_MESSAGES)) Hibernate.initialize(user.getReceivedMessages());
-            return user;
-        } finally {
-            wrapper.closeSession();
-        }
+        return getEntity(User.class, id, entity -> {
+            if (includes.contains(Include.IMAGES)) Hibernate.initialize(entity.getImage());
+            if (includes.contains(Include.PROJECTS)) Hibernate.initialize(entity.getProjects());
+            if (includes.contains(Include.LIKES)) Hibernate.initialize(entity.getLikedProjects());
+            if (includes.contains(Include.COMMENTS)) Hibernate.initialize(entity.getComments());
+            if (includes.contains(Include.BLOCKS)) Hibernate.initialize(entity.getBlocks());
+            if (includes.contains(Include.BOOKMARKS)) Hibernate.initialize(entity.getBookmarks());
+            if (includes.contains(Include.REPORTS)) Hibernate.initialize(entity.getReports());
+            if (includes.contains(Include.SENT_MESSAGES)) Hibernate.initialize(entity.getSentMessages());
+            if (includes.contains(Include.RECEIVED_MESSAGES)) Hibernate.initialize(entity.getReceivedMessages());
+        });
     }
 
     @Override
@@ -90,29 +85,15 @@ public class UserRepositoryImpl extends AbstractRepository implements UserReposi
 
     @Override
     public List<User> search(UserSearchParams searchParams){
-        try {
-            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
-            CriteriaQuery<User> query = getSearchQuery(searchParams, criteriaBuilder, User.class);
-            query.select(query.from(User.class));
-            return wrapper.getSession().createQuery(query).setFirstResult(searchParams.first).setMaxResults(searchParams.count).getResultList();
-        } finally {
-            wrapper.closeSession();
-        }
+        return searchEntities(searchParams, User.class);
     }
 
     @Override
     public long count(UserSearchParams searchParams){
-        try{
-            CriteriaBuilder criteriaBuilder = wrapper.getSession().getCriteriaBuilder();
-            CriteriaQuery<Long> query = getSearchQuery(searchParams, criteriaBuilder, Long.class);
-            query.select(criteriaBuilder.count(query.from(User.class)));
-            return wrapper.getSession().createQuery(query).getSingleResult();
-        } finally {
-            wrapper.closeSession();
-        }
+        return countEntities(searchParams, User.class);
     }
 
-    private <T> CriteriaQuery<T> getSearchQuery(UserSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
+    protected  <T> CriteriaQuery<T> getSearchQuery(UserSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
         CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<User> user = query.from(User.class);
         List<Predicate> predicates = new LinkedList<>();
@@ -150,10 +131,6 @@ public class UserRepositoryImpl extends AbstractRepository implements UserReposi
             query.orderBy(order);
         }
         return query;
-    }
-
-    private String preparePattern(String s, boolean exact){
-        return (exact?"%":"")+s.toUpperCase()+(exact?"%":"");
     }
 
     private String namePattern(String name){
