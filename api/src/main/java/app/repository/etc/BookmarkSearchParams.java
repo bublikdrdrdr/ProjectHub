@@ -6,15 +6,18 @@ import java.util.Objects;
 
 public class BookmarkSearchParams extends SearchParams {
 
+    public static final Sort[] sortValues = Sort.values();
+
     public enum Sort {NONE, REGISTERED, ONLINE, NAME, SURNAME, ADDED}
 
     public User user;
     public String name;
     public boolean onlineOnly;
 
-    protected BookmarkSearchParams(Sort sort, User user, Boolean desc, Integer first, Integer count, Boolean onlineOnly) {
+    public BookmarkSearchParams(Sort sort, User user, String name, Boolean desc, Integer first, Integer count, Boolean onlineOnly) {
         super(sort.toString(), desc, first, count);
         this.onlineOnly = nullToDefault(onlineOnly, false);
+        this.name = name;
         this.user = user;
     }
 

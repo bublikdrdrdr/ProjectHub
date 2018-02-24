@@ -11,6 +11,8 @@ public class ReportSearchParams extends SearchParams {
 
     public enum Sort {NONE, SENT}
 
+    public static final Sort[] sortValues = Sort.values();
+
     public User admin;
     public User sender;
     public Report.ReportType reportType;

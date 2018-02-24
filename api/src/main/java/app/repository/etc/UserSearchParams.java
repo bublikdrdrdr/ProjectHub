@@ -2,7 +2,9 @@ package app.repository.etc;
 
 public class UserSearchParams extends SearchParams {
 
-    public enum Sort {NONE, REGISTERED, ONLINE, NAME, SURNAME};
+    public enum Sort {NONE, REGISTERED, ONLINE, NAME, SURNAME}
+
+    public static final Sort[] sortValues = Sort.values();
 
     public String email;
     public String username;
