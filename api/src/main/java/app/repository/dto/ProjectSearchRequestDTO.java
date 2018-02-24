@@ -27,4 +27,9 @@ public class ProjectSearchRequestDTO extends PaginationDTO{
             return ProjectSearchParams.Sort.NONE;
         }
     }
+
+    public ProjectSearchParams getSearchParams(){
+        boolean so = subject_only==null?false:subject_only;
+        return new ProjectSearchParams(false, ProjectSearchParams.Sort.NONE, desc, first, count, author, query, so?null:query);
+    }
 }

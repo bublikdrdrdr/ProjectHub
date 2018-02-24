@@ -2,6 +2,8 @@ package app.repository.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProjectDTO {
 
@@ -11,7 +13,7 @@ public class ProjectDTO {
     public Long author_id;
     public String subject;
     public String content;
-    public ProjectAttachmentDTO[] attachments;
+    public List<ProjectAttachmentDTO> attachments;
     public Long likes;
     public Long dislikes;
     public Long comments;
@@ -21,7 +23,7 @@ public class ProjectDTO {
     public ProjectDTO() {
     }
 
-    public ProjectDTO(Long id, Long created, Long posted, Long author_id, String subject, String content, ProjectAttachmentDTO[] attachments, Long likes, Long comments) {
+    public ProjectDTO(Long id, Long created, Long posted, Long author_id, String subject, String content, List<ProjectAttachmentDTO> attachments, Long likes, Long dislikes, Long comments) {
         this.id = id;
         this.created = created;
         this.posted = posted;

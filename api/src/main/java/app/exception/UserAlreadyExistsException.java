@@ -5,7 +5,7 @@ import java.util.EnumSet;
 /**
  * Created by Bublik on 22-Dec-17.
  */
-public class UserAlreadyExistsException extends RuntimeException{
+public class UserAlreadyExistsException extends EntityAlreadyExistsException{
 
     public enum ConflictField {EMAIL, USERNAME}
 
