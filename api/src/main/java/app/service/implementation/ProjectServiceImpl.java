@@ -1,15 +1,10 @@
 package app.service.implementation;
 
 import app.exception.ForbiddenException;
-import app.repository.dao.CommentRepository;
-import app.repository.dao.LikeRepository;
-import app.repository.dao.ProjectRepository;
-import app.repository.dao.UserRepository;
+import app.exception.SetValueException;
+import app.repository.dao.*;
 import app.repository.dto.*;
-import app.repository.entity.AttachmentType;
-import app.repository.entity.LikedProject;
-import app.repository.entity.Project;
-import app.repository.entity.User;
+import app.repository.entity.*;
 import app.repository.etc.CommentSearchParams;
 import app.repository.etc.LikeSearchParams;
 import app.repository.etc.ProjectSearchParams;
@@ -31,6 +26,7 @@ public class ProjectServiceImpl implements ProjectService {
     private AuthenticationService authenticationService;
     private CommentRepository commentRepository;
     private LikeRepository likeRepository;
+    private AttachmentRepository attachmentRepository;
 
 
 
@@ -51,7 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public byte[] getProjectAttachment(long id) {
-        return projectRepository.getAttachment(id).getBlobValue();
+        return attachmentRepository.get(id).getBlobValue();
     }
 
     @Override
@@ -68,7 +64,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectAttachmentTypeDTO> getAttachmentTypes() {
-        return projectRepository.getAttachmentTypes().stream().
+        return attachmentRepository.getAttachmentTypes().stream().
                 map(attachmentType -> new ProjectAttachmentTypeDTO(attachmentType.getId(), attachmentType.getName().name())).
                 collect(Collectors.toList());
     }
@@ -82,40 +78,54 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void update(ProjectDTO dto) {
-        Project project = projectRepository.get(dto.id);
-        User author = authenticationService.getAuthenticatedUser();
-        if (!Objects.equals(author.getId(), project.getAuthor().getId())) throw new ForbiddenException("User is not an owner of this project");
-        //TODO: continue
+        Project project = getProjectIfOwner(dto.id);
+        if (dto.content!=null) project.setContent(dto.content);
+        if (dto.subject!=null) project.setSubject(dto.subject);
+        projectRepository.save(project);
     }
 
     @Override
     public void post(long id) {
-
+        Project project = getProjectIfOwner(id);
+        if (project.getPosted()!=null) throw new SetValueException("Project is already posted");
+        project.setPosted(now());
+        projectRepository.save(project);
     }
 
     @Override
     public void remove(long id) {
-
+        Project project = getProjectIfOwner(id);
+        projectRepository.remove(project);
     }
 
     @Override
-    public long addAttachment(byte[] value, long attachmentTypeId) {
-        return 0;
+    public long addAttachment(long projectId, byte[] value, long attachmentTypeId) {
+        Project project = getProjectIfOwner(projectId);
+        AttachmentType type = attachmentRepository.getAttachmentType(attachmentTypeId);
+        ProjectAttachment attachment = new ProjectAttachment(null, project, type, null, value);
+        return attachmentRepository.save(attachment);
     }
 
     @Override
     public void removeAttachment(long id) {
-
+        ProjectAttachment attachment = attachmentRepository.get(id, false, true);
+        getProjectIfOwner(attachment.getProject().getId());
+        attachmentRepository.remove(attachment);
     }
 
+    //TODO: add values checking
     @Override
-    public long comment(ProjectCommentDTO comment) {
-        return 0;
+    public long comment(ProjectCommentDTO commentDTO) {
+        User user = authenticationService.getAuthenticatedUser();
+        Project project = projectRepository.get(commentDTO.project);
+        ProjectComment comment = new ProjectComment(null, user, project, now(), commentDTO.message);
+        return commentRepository.save(comment);
     }
 
     @Override
     public void removeComment(long id) {
-
+        User user = authenticationService.getAuthenticatedUser();
+        
     }
 
     @Override
@@ -144,5 +154,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     private long getProjectCommentsCount(Project project){
         return commentRepository.count(new CommentSearchParams(false, 0,1,project, null));
+    }
+
+    private Project getProjectIfOwner(long projectId){
+        Project project = projectRepository.get(projectId);
+        if (project==null) throw new NullPointerException("Project not found");
+        User author = authenticationService.getAuthenticatedUser();
+        if (!Objects.equals(author.getId(), project.getAuthor().getId())) throw new ForbiddenException("User is not an owner of this project");
+        return project;
     }
 }

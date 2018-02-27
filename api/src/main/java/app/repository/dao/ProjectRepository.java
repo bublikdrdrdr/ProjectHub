@@ -10,6 +10,4 @@ import java.util.List;
 public interface ProjectRepository extends CrudRepository<Project>, Searchable<Project, ProjectSearchParams> {
 
     Project get(long id, boolean includeAttachments);
-    ProjectAttachment getAttachment(long id);
-    List<AttachmentType> getAttachmentTypes();
 }

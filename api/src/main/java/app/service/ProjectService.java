@@ -14,7 +14,7 @@ public interface ProjectService {
     void update(ProjectDTO project);
     void post(long id);
     void remove(long id);
-    long addAttachment(byte[] value, long attachmentTypeId);
+    long addAttachment(long projectId, byte[] value, long attachmentTypeId);
     void removeAttachment(long id);
     long comment(ProjectCommentDTO comment);
     void removeComment(long id);

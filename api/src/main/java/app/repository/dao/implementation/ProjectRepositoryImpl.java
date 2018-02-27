@@ -39,27 +39,6 @@ public class ProjectRepositoryImpl extends SearchableRepository<ProjectSearchPar
     }
 
     @Override
-    public ProjectAttachment getAttachment(long id) {
-        try{
-            ProjectAttachment attachment = wrapper.getSession().get(ProjectAttachment.class, id);
-            Hibernate.initialize(attachment.getBlobValue());
-            return attachment;
-        } finally {
-            wrapper.closeSession();
-        }
-    }
-
-    @Override
-    public List<AttachmentType> getAttachmentTypes() {
-        try {
-            Query<AttachmentType> query = wrapper.getSession().createQuery("FROM AttachmentType", AttachmentType.class);
-            return query.getResultList();
-        } finally {
-            wrapper.closeSession();
-        }
-    }
-
-    @Override
     public long save(Project project) {
         super.saveEntity(project);
         return project.getId();
@@ -78,6 +57,7 @@ public class ProjectRepositoryImpl extends SearchableRepository<ProjectSearchPar
     @Override
     public void remove(Project project) {
         super.removeEntity(project);
+        //TODO: check if it works for attachments/likes/comments
     }
 
     @Override
@@ -85,7 +65,7 @@ public class ProjectRepositoryImpl extends SearchableRepository<ProjectSearchPar
         CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<Project> project = query.from(Project.class);
         List<Predicate> predicates = new LinkedList<>();
-        if (searchParams.authorId != null) predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("author")), searchParams.authorId.toString()));
+        if (searchParams.authorId != null) predicates.add(criteriaBuilder.equal(project.get("author"), searchParams.authorId.toString()));
         if (searchParams.exact) {
             if (searchParams.subject != null)
                 predicates.add(criteriaBuilder.like(criteriaBuilder.upper(project.get("subject")), preparePattern(searchParams.subject, false)));
