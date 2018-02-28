@@ -13,6 +13,8 @@ import app.service.ProjectService;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,19 +23,25 @@ import java.util.stream.Collectors;
 
 import static app.util.ServiceUtils.now;
 
-
+@Repository
 public class ProjectServiceImpl implements ProjectService {
 
-    Logger logger = Logger.getLogger(ProjectServiceImpl.class);
+    private Logger logger = Logger.getLogger(ProjectServiceImpl.class);
 
-    private UserRepository userRepository;
     private ProjectRepository projectRepository;
     private AuthenticationService authenticationService;
     private CommentRepository commentRepository;
     private LikeRepository likeRepository;
     private AttachmentRepository attachmentRepository;
 
-
+    @Autowired
+    public ProjectServiceImpl(ProjectRepository projectRepository, AuthenticationService authenticationService, CommentRepository commentRepository, LikeRepository likeRepository, AttachmentRepository attachmentRepository) {
+        this.projectRepository = projectRepository;
+        this.authenticationService = authenticationService;
+        this.commentRepository = commentRepository;
+        this.likeRepository = likeRepository;
+        this.attachmentRepository = attachmentRepository;
+    }
 
     @Override
     public ProjectDTO get(long id) {
