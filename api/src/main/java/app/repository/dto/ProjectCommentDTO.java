@@ -1,5 +1,7 @@
 package app.repository.dto;
 
+import app.repository.entity.ProjectComment;
+
 public class ProjectCommentDTO {
 
     public Long id;
@@ -17,5 +19,9 @@ public class ProjectCommentDTO {
         this.project = project;
         this.posted = posted;
         this.message = message;
+    }
+
+    public ProjectCommentDTO(ProjectComment projectComment){
+        this(projectComment.getId(), projectComment.getOwner().getId(), projectComment.getProject().getId(), projectComment.getPosted().getTime(), projectComment.getText());
     }
 }

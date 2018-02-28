@@ -49,6 +49,8 @@ public class CommentRepositoryImpl extends SearchableRepository<CommentSearchPar
     protected <T> CriteriaQuery<T> getSearchQuery(CommentSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass) {
         CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<ProjectComment> comment = query.from(ProjectComment.class);
+        comment.fetch("owner");
+        comment.fetch("project");
         List<Predicate> predicates = new LinkedList<>();
         if (searchParams.project==null) throw new NullPointerException("BookmarkSearchParams can't be null");
         if (searchParams.message!=null) {

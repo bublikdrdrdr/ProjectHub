@@ -10,6 +10,9 @@ import app.repository.etc.LikeSearchParams;
 import app.repository.etc.ProjectSearchParams;
 import app.service.AuthenticationService;
 import app.service.ProjectService;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +23,8 @@ import static app.util.ServiceUtils.now;
 
 
 public class ProjectServiceImpl implements ProjectService {
+
+    Logger logger = Logger.getLogger(ProjectServiceImpl.class);
 
     private UserRepository userRepository;
     private ProjectRepository projectRepository;
@@ -125,27 +130,46 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void removeComment(long id) {
         User user = authenticationService.getAuthenticatedUser();
-        
+        ProjectComment comment = commentRepository.get(id);
+        if (!comment.getOwner().getId().equals(user.getId())) throw new ForbiddenException("User is not an owner of this comment");
+        commentRepository.remove(comment);
     }
 
     @Override
     public ProjectCommentSearchResponseDTO getComments(ProjectCommentSearchRequestDTO request) {
-        return null;
+        Project project = projectRepository.get(request.project);
+        CommentSearchParams searchParams = request.getSearchParams(project);
+        List<ProjectComment> commentList = commentRepository.search(searchParams);
+        long count = commentRepository.count(searchParams);
+        return new ProjectCommentSearchResponseDTO(count, commentList.stream().map(ProjectCommentDTO::new).collect(Collectors.toList()));
     }
 
     @Override
     public void like(long id) {
-
+        unlike(id);
+        LikedProject likedProject = new LikedProject(LikedProject.MarkType.LIKE, authenticationService.getAuthenticatedUser(), projectRepository.get(id), now());
+        likeRepository.save(likedProject);
     }
 
     @Override
     public void dislike(long id) {
-
+        unlike(id);
+        LikedProject likedProject = new LikedProject(LikedProject.MarkType.DISLIKE, authenticationService.getAuthenticatedUser(), projectRepository.get(id), now());
+        likeRepository.save(likedProject);
     }
 
     @Override
     public void unlike(long id) {
-
+        User user = authenticationService.getAuthenticatedUser();
+        Project project = projectRepository.get(id);
+        if (user==null || project==null) throw new NullPointerException("Not found");
+        List<LikedProject> likes = likeRepository.search(new LikeSearchParams(null, null, 0,20,project, user, null));
+        if (likes.size()>1) {
+            logger.log(Level.ERROR, "There are more than 1 like record on project, user id: " + user.getId() + ", project id: " + project.getId());
+            for (LikedProject likedProject : likes) likeRepository.remove(likedProject);
+        } else if (likes.size()==1){
+            likeRepository.remove(likes.get(0));
+        }
     }
 
     private long getProjectLikesCount(Project project, LikedProject.MarkType markType){
