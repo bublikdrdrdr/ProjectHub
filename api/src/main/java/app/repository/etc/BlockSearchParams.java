@@ -9,8 +9,8 @@ public class BlockSearchParams extends SearchParams {
     public User user;
     public boolean activeOnly;
 
-    public BlockSearchParams(String sort, Boolean desc, Integer first, Integer count, User admin, User user, Boolean activeOnly) {
-        super(sort, desc, first, count);
+    public BlockSearchParams(Boolean desc, Integer first, Integer count, User admin, User user, Boolean activeOnly) {
+        super(null, desc, first, count);
         this.activeOnly = nullToDefault(activeOnly, false);
         this.admin = admin;
         this.user = user;

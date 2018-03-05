@@ -15,6 +15,7 @@ public class BlockDTO {
     public UserDTO user;
     public UserDTO admin;
     public UserDTO canceled_by;
+    public Boolean canceled;
     public String comment;
     public Boolean active;
 
@@ -42,7 +43,7 @@ public class BlockDTO {
         this.active = active;
     }
 
-    public BlockDTO(Long id, Long start, Long end, Long user_id, Long admin_id, Integer canceled_by_id, UserDTO user, UserDTO admin, UserDTO canceled_by, String comment, Boolean active) {
+    public BlockDTO(Long id, Long start, Long end, Long user_id, Long admin_id, Integer canceled_by_id, UserDTO user, UserDTO admin, UserDTO canceled_by, Boolean canceled, String comment, Boolean active) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -52,6 +53,7 @@ public class BlockDTO {
         this.user = user;
         this.admin = admin;
         this.canceled_by = canceled_by;
+        this.canceled = canceled;
         this.comment = comment;
         this.active = active;
     }

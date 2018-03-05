@@ -32,10 +32,10 @@ public class ImageRepositoryImpl extends AbstractRepository implements ImageRepo
     }
 
     @Override
-    public Image getUserImage(User user) {
+    public Image getUserImage(User user, boolean includeValue) {
         try {
             wrapper.getSession();
-            Hibernate.initialize(user.getImage());
+            if (includeValue) Hibernate.initialize(user.getImage());
             return user.getImage();
         } finally {
             wrapper.closeSession();

@@ -1,5 +1,8 @@
 package app.repository.dto;
 
+import app.repository.entity.User;
+import app.repository.etc.BlockSearchParams;
+
 public class BlockSearchRequestDTO extends PaginationDTO {
 
     public Long admin;
@@ -14,5 +17,9 @@ public class BlockSearchRequestDTO extends PaginationDTO {
         this.admin = admin;
         this.user = user;
         this.active_only = active_only;
+    }
+
+    public BlockSearchParams getSearchParams(User adminEntity, User userEntity){
+        return new BlockSearchParams(desc, first, count, adminEntity, userEntity, active_only);
     }
 }

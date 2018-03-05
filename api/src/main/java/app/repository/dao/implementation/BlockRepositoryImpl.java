@@ -53,6 +53,9 @@ public class BlockRepositoryImpl extends SearchableRepository<BlockSearchParams,
     protected  <T> CriteriaQuery<T> getSearchQuery(BlockSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass){
         CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<UserBlock> block = query.from(UserBlock.class);
+        block.fetch("user");
+        block.fetch("admin");
+        block.fetch("canceledBy");
         List<Predicate> predicates = new LinkedList<>();
         if (searchParams.admin!=null) predicates.add(criteriaBuilder.equal(block.get("admin"), searchParams.admin));
         if (searchParams.user!=null) predicates.add(criteriaBuilder.equal(block.get("user"), searchParams.user));
@@ -74,6 +77,6 @@ public class BlockRepositoryImpl extends SearchableRepository<BlockSearchParams,
 
     @Override
     public boolean isBlocked(User user) {
-        return count(new BlockSearchParams(null, false, 0, 2, null, user, true))>0;
+        return count(new BlockSearchParams(null, 0, 2, null, user, true))>0;
     }
 }
