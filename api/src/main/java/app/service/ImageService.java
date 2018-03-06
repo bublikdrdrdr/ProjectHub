@@ -7,6 +7,6 @@ public interface ImageService {
 
     byte[] getById(long id);
     ImageDTO getUserImageInfo(long userId);
-    long add(long userId, byte[] image);
-    void remove(long userId);
+    long add(byte[] image);
+    void remove();
 }
