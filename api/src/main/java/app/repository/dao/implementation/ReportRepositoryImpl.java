@@ -49,6 +49,8 @@ public class ReportRepositoryImpl extends SearchableRepository<ReportSearchParam
     protected <T> CriteriaQuery<T> getSearchQuery(ReportSearchParams searchParams, CriteriaBuilder criteriaBuilder, Class<T> resultClass) {
         CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
         Root<Report> report = query.from(Report.class);
+        report.fetch("admin");
+        report.fetch("sender");
         List<Predicate> predicates = new LinkedList<>();
         if (searchParams.admin!=null) predicates.add(criteriaBuilder.equal(report.get("admin"), searchParams.admin));
         if (searchParams.sender!=null) predicates.add(criteriaBuilder.equal(report.get("sender"), searchParams.sender));

@@ -1,5 +1,6 @@
 package app.repository.dto;
 
+import app.repository.entity.Message;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,5 +25,9 @@ public class MessageDTO {
         this.time = time;
         this.seen = seen;
         this.out = out;
+    }
+
+    public MessageDTO(Message message, long interlocutorId) {
+        this(message.getId(),message.getMessage(), interlocutorId, message.getImage()!=null, message.getSent().getTime(), message.isSeen(), message.getReceiver().getId()==interlocutorId);
     }
 }

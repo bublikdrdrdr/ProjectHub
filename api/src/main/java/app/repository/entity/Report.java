@@ -28,7 +28,7 @@ public class Report {
     @Enumerated(EnumType.STRING)
     private ReportType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn
     private User sender;
 

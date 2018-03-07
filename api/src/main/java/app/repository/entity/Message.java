@@ -131,4 +131,8 @@ public class Message {
     public void setImage(byte[] image) {
         this.image = image;
     }
+
+    public User getInterlocutor(User owner){
+        return getReceiver().getId().equals(owner.getId())?getSender():getSender();
+    }
 }

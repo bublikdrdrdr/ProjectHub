@@ -33,6 +33,14 @@ public class ReportSearchRequestDTO extends PaginationDTO {
         this.active_only = active_only;
     }
 
+    public Report.ReportType getReportType(){
+        try{
+            return Report.reportTypeValues[type];
+        } catch (Exception e){
+            return null;
+        }
+    }
+
     public ReportSearchParams.Sort getSortValue(){
         try{
             return sortValues[sort];
